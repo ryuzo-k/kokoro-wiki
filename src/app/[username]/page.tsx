@@ -80,7 +80,7 @@ export default async function UserProfile({ params }: Props) {
                 {currentThought.content}
               </div>
               <div className="mt-4 text-xs text-foreground opacity-50">
-                {new Date(currentThought.created_at).toLocaleDateString('ja-JP', {
+                {new Date(currentThought.created_at).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
@@ -101,7 +101,7 @@ export default async function UserProfile({ params }: Props) {
                         {thought.content}
                       </div>
                       <div className="mt-2 text-xs text-foreground opacity-50">
-                        {new Date(thought.created_at).toLocaleDateString('ja-JP', {
+                        {new Date(thought.created_at).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric'
@@ -124,7 +124,7 @@ export default async function UserProfile({ params }: Props) {
                 {currentPeople.content}
               </div>
               <div className="mt-4 text-xs text-foreground opacity-50">
-                {new Date(currentPeople.created_at).toLocaleDateString('ja-JP', {
+                {new Date(currentPeople.created_at).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
@@ -145,7 +145,7 @@ export default async function UserProfile({ params }: Props) {
                         {person.content}
                       </div>
                       <div className="mt-2 text-xs text-foreground opacity-50">
-                        {new Date(person.created_at).toLocaleDateString('ja-JP', {
+                        {new Date(person.created_at).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric'
