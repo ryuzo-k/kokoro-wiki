@@ -18,10 +18,9 @@ export interface ThoughtEntry {
   created_at: string
 }
 
-export interface TalkState {
+export interface PeopleEntry {
   id: string
   username: string
-  mode: 'WANT' | 'AVOID'
-  people_text: string
-  updated_at: string
+  content: string
+  created_at: string
 }

@@ -1,18 +1,16 @@
 # kokoro-wiki README
 
-A minimalist wiki for thoughts and connections, built with Next.js 14 and Supabase.
+Linktree風の個人プロフィールサイト。思想と話したい人を共有し、履歴として蓄積していくアプリ。
 
 ## Features
 
 - **IBM Plex Mono** typography with monochrome palette (#111 text, #FAFAFA bg, #00BFFF links)
 - **No animations** - generous vertical whitespace (line-height 1.8)
-- **Three main pages:**
-  - `/new` - Large Markdown textarea with Cmd+Enter publishing
-  - `/edit` - Toggle WANT/AVOID mode + textarea for talk state
-  - `/[username]` - Public profile with timeline and current talk state
-- **Auto-save drafts** to localStorage every 1 second
-- **Command palette** - Press Esc to access Preview, Publish, Edit Theme
-- **OG image API** - Renders first line as heading if it starts with "# "
+- **Linktree-style profile pages:**
+  - `/` - ログイン画面（ユーザーネーム入力）
+  - `/dashboard/[username]` - 編集画面（思想・話したい人を更新）
+  - `/[username]` - 公開プロフィール（現在の内容＋過去の履歴）
+- **履歴機能** - 更新するたびに過去のものが蓄積される
 - **ISR** - Profile pages revalidate every 60 seconds
 
 ## Setup
@@ -31,26 +29,25 @@ A minimalist wiki for thoughts and connections, built with Next.js 14 and Supaba
 
 3. **Create database tables:**
    ```sql
-   -- thought_entries table
-   CREATE TABLE thought_entries (
+   -- thoughts table
+   CREATE TABLE thoughts (
      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
      username TEXT NOT NULL,
      content TEXT NOT NULL,
      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
    );
 
-   -- talk_state table
-   CREATE TABLE talk_state (
+   -- people_want_to_talk table
+   CREATE TABLE people_want_to_talk (
      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-     username TEXT UNIQUE NOT NULL,
-     mode TEXT CHECK (mode IN ('WANT', 'AVOID')) NOT NULL,
-     people_text TEXT,
-     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+     username TEXT NOT NULL,
+     content TEXT NOT NULL,
+     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
    );
 
    -- Enable RLS (optional)
-   ALTER TABLE thought_entries ENABLE ROW LEVEL SECURITY;
-   ALTER TABLE talk_state ENABLE ROW LEVEL SECURITY;
+   ALTER TABLE thoughts ENABLE ROW LEVEL SECURITY;
+   ALTER TABLE people_want_to_talk ENABLE ROW LEVEL SECURITY;
    ```
 
 4. **Run the development server:**
@@ -62,10 +59,10 @@ A minimalist wiki for thoughts and connections, built with Next.js 14 and Supaba
 
 ## Usage
 
-- **Create thoughts:** Go to `/new`, write in Markdown, press Cmd+Enter to publish
-- **Edit talk state:** Go to `/edit`, toggle WANT/AVOID, describe your preferences
-- **View profiles:** Visit `/[username]` to see public timeline and current talk state
-- **Command palette:** Press Esc anywhere to access quick actions
+1. **ログイン:** トップページでユーザーネームを入力
+2. **編集:** ダッシュボードで「現在の思想」と「話したい人」を更新
+3. **公開:** あなたのURL `kokoro.wiki/[username]` で公開プロフィールを確認
+4. **履歴:** 更新するたびに過去の内容が履歴として蓄積される
 
 ## Tech Stack
 

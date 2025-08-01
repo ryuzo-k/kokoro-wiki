@@ -1,9 +1,22 @@
 import { notFound } from 'next/navigation'
 import { createServerClient } from '@/lib/supabase'
-import { ThoughtEntry, TalkState } from '@/lib/supabase'
 
 interface Props {
   params: { username: string }
+}
+
+interface ThoughtEntry {
+  id: string
+  username: string
+  content: string
+  created_at: string
+}
+
+interface PeopleEntry {
+  id: string
+  username: string
+  content: string
+  created_at: string
 }
 
 // ISR with 60 second revalidation
@@ -13,119 +26,61 @@ export default async function UserProfile({ params }: Props) {
   const { username } = params
   const supabase = createServerClient()
 
-  // Fetch thought entries
+  // Fetch thoughts
   const { data: thoughts, error: thoughtsError } = await supabase
-    .from('thought_entries')
+    .from('thoughts')
     .select('*')
     .eq('username', username)
     .order('created_at', { ascending: false })
 
-  // Fetch talk state
-  const { data: talkState, error: talkStateError } = await supabase
-    .from('talk_state')
+  // Fetch people entries
+  const { data: people, error: peopleError } = await supabase
+    .from('people_want_to_talk')
     .select('*')
     .eq('username', username)
-    .single()
+    .order('created_at', { ascending: false })
 
   if (thoughtsError && thoughtsError.code !== 'PGRST116') {
     console.error('Error fetching thoughts:', thoughtsError)
   }
 
-  if (talkStateError && talkStateError.code !== 'PGRST116') {
-    console.error('Error fetching talk state:', talkStateError)
+  if (peopleError && peopleError.code !== 'PGRST116') {
+    console.error('Error fetching people:', peopleError)
   }
 
   // If no data exists for this user, show not found
-  if ((!thoughts || thoughts.length === 0) && !talkState) {
+  if ((!thoughts || thoughts.length === 0) && (!people || people.length === 0)) {
     notFound()
   }
 
-  // Group thoughts by date
-  const groupedThoughts = thoughts?.reduce((groups: Record<string, ThoughtEntry[]>, thought) => {
-    const date = new Date(thought.created_at).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-    
-    if (!groups[date]) {
-      groups[date] = []
-    }
-    groups[date].push(thought)
-    return groups
-  }, {}) || {}
+  // Get current (latest) entries
+  const currentThought = thoughts?.[0]
+  const currentPeople = people?.[0]
 
-  // Extract display name from email (before @)
-  const displayName = username.includes('@') 
-    ? username.split('@')[0] 
-    : username
+  // Get history (excluding current)
+  const thoughtHistory = thoughts?.slice(1) || []
+  const peopleHistory = people?.slice(1) || []
 
   return (
-    <div className="min-h-screen p-8 max-w-4xl mx-auto">
-      <header className="mb-16">
-        <h1 className="text-3xl mb-2">{displayName}</h1>
-        <p className="text-foreground opacity-70">@{username}</p>
+    <div className="min-h-screen p-8 max-w-2xl mx-auto">
+      <header className="text-center mb-12">
+        <h1 className="text-3xl mb-2">@{username}</h1>
+        <p className="text-foreground opacity-70">
+          kokoro.wiki/{username}
+        </p>
       </header>
 
       <main className="space-y-16">
-        {/* Timeline */}
-        {Object.keys(groupedThoughts).length > 0 && (
-          <section>
-            <h2 className="text-xl mb-8">Timeline</h2>
-            <div className="space-y-12">
-              {Object.entries(groupedThoughts).map(([date, dateThoughts]) => (
-                <div key={date} className="space-y-6">
-                  <h3 className="text-lg font-medium text-foreground opacity-80 border-b border-foreground pb-2">
-                    {date}
-                  </h3>
-                  <div className="space-y-8 pl-4">
-                    {dateThoughts.map((thought) => (
-                      <article key={thought.id} className="space-y-4">
-                        <div className="text-sm text-foreground opacity-60">
-                          {new Date(thought.created_at).toLocaleTimeString('en-US', {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </div>
-                        <div className="prose prose-mono max-w-none">
-                          <ThoughtContent content={thought.content} />
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Talk State */}
-        {talkState && (
-          <section>
-            <h2 className="text-xl mb-8">Current Talk State</h2>
-            <div className="border border-foreground p-6 space-y-4">
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-foreground opacity-70">Mode:</span>
-                <span className={`px-3 py-1 text-sm border border-foreground ${
-                  talkState.mode === 'WANT' 
-                    ? 'bg-foreground text-background' 
-                    : 'bg-background text-foreground'
-                }`}>
-                  {talkState.mode}
-                </span>
+        {/* 現在の思想 */}
+        {currentThought && (
+          <section className="space-y-6">
+            <h2 className="text-xl border-b border-foreground pb-2">現在の思想</h2>
+            <div className="p-6 border border-foreground">
+              <div className="whitespace-pre-wrap text-foreground leading-relaxed">
+                {currentThought.content}
               </div>
-              
-              {talkState.people_text && (
-                <div className="space-y-2">
-                  <span className="text-sm text-foreground opacity-70">Context:</span>
-                  <div className="whitespace-pre-wrap text-foreground">
-                    {talkState.people_text}
-                  </div>
-                </div>
-              )}
-              
-              <div className="text-xs text-foreground opacity-50 pt-2 border-t border-foreground">
-                Last updated: {new Date(talkState.updated_at).toLocaleDateString('en-US', {
+              <div className="mt-4 text-xs text-foreground opacity-50">
+                {new Date(currentThought.created_at).toLocaleDateString('ja-JP', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
@@ -134,64 +89,94 @@ export default async function UserProfile({ params }: Props) {
                 })}
               </div>
             </div>
+            
+            {/* 思想の履歴 */}
+            {thoughtHistory.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-lg text-foreground opacity-80">過去の思想</h3>
+                <div className="space-y-4 pl-4">
+                  {thoughtHistory.map((thought) => (
+                    <div key={thought.id} className="p-4 border border-foreground opacity-70">
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                        {thought.content}
+                      </div>
+                      <div className="mt-2 text-xs text-foreground opacity-50">
+                        {new Date(thought.created_at).toLocaleDateString('ja-JP', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* 話したい人 */}
+        {currentPeople && (
+          <section className="space-y-6">
+            <h2 className="text-xl border-b border-foreground pb-2">話したい人</h2>
+            <div className="p-6 border border-foreground">
+              <div className="whitespace-pre-wrap text-foreground leading-relaxed">
+                {currentPeople.content}
+              </div>
+              <div className="mt-4 text-xs text-foreground opacity-50">
+                {new Date(currentPeople.created_at).toLocaleDateString('ja-JP', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </div>
+            </div>
+            
+            {/* 話したい人の履歴 */}
+            {peopleHistory.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-lg text-foreground opacity-80">過去に話したかった人</h3>
+                <div className="space-y-4 pl-4">
+                  {peopleHistory.map((person) => (
+                    <div key={person.id} className="p-4 border border-foreground opacity-70">
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                        {person.content}
+                      </div>
+                      <div className="mt-2 text-xs text-foreground opacity-50">
+                        {new Date(person.created_at).toLocaleDateString('ja-JP', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </section>
         )}
 
         {/* Empty state */}
-        {Object.keys(groupedThoughts).length === 0 && !talkState && (
+        {!currentThought && !currentPeople && (
           <div className="text-center py-16">
             <p className="text-foreground opacity-70">
-              No thoughts or talk state found for this user.
+              まだ何も投稿されていません
             </p>
           </div>
         )}
       </main>
-    </div>
-  )
-}
 
-// Simple markdown-like rendering for thought content
-function ThoughtContent({ content }: { content: string }) {
-  const lines = content.split('\n')
-  
-  return (
-    <div className="space-y-4">
-      {lines.map((line, index) => {
-        // Handle headings
-        if (line.startsWith('# ')) {
-          return (
-            <h1 key={index} className="text-2xl font-medium">
-              {line.slice(2)}
-            </h1>
-          )
-        }
-        if (line.startsWith('## ')) {
-          return (
-            <h2 key={index} className="text-xl font-medium">
-              {line.slice(3)}
-            </h2>
-          )
-        }
-        if (line.startsWith('### ')) {
-          return (
-            <h3 key={index} className="text-lg font-medium">
-              {line.slice(4)}
-            </h3>
-          )
-        }
-        
-        // Handle empty lines
-        if (line.trim() === '') {
-          return <div key={index} className="h-4" />
-        }
-        
-        // Regular paragraphs
-        return (
-          <p key={index} className="leading-relaxed">
-            {line}
-          </p>
-        )
-      })}
+      <footer className="mt-16 text-center">
+        <a 
+          href="/" 
+          className="text-link hover:underline"
+        >
+          kokoro.wiki に戻る
+        </a>
+      </footer>
     </div>
   )
 }
