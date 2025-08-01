@@ -15,8 +15,7 @@ export default function Home() {
     }
   }
 
-  const handleViewProfile = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleViewProfile = () => {
     if (username.trim()) {
       router.push(`/${username.trim()}`)
     }

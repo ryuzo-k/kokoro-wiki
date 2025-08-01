@@ -1,6 +1,10 @@
-# kokoro-wiki README
+# kokoro-wiki
 
 A Linktree-style personal profile site where you share your thoughts and who you want to connect with, building a history over time.
+
+**Created by**: Ryuzo Kijima  
+**Organization**: [Kokoro Research](https://kokororesearch.org)  
+**Contact**: ryuzo@kokororesearch.org
 
 ## Features
 

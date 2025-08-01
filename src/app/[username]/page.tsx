@@ -65,9 +65,15 @@ export default async function UserProfile({ params }: Props) {
     <div className="min-h-screen p-8 max-w-2xl mx-auto">
       <header className="text-center mb-12">
         <h1 className="text-3xl mb-2">@{username}</h1>
-        <p className="text-foreground opacity-70">
+        <p className="text-foreground opacity-70 mb-4">
           kokoro.wiki/{username}
         </p>
+        <a 
+          href={`/edit-username/${username}`}
+          className="inline-block px-4 py-2 text-sm border border-foreground hover:bg-foreground hover:text-background transition-colors"
+        >
+          Edit Username
+        </a>
       </header>
 
       <main className="space-y-16">

@@ -2,6 +2,17 @@
   "name": "kokoro-wiki",
   "version": "0.1.0",
   "private": true,
+  "description": "A Linktree-style personal profile site for sharing thoughts and connections",
+  "author": {
+    "name": "Ryuzo Kijima",
+    "email": "ryuzo@kokororesearch.org",
+    "url": "https://kokororesearch.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ryuzo-k/kokoro-wiki.git"
+  },
+  "homepage": "https://kokoro.wiki",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

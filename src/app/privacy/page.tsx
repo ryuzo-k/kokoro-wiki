@@ -101,17 +101,27 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className="text-xl mb-4 border-b border-foreground pb-2">Contact</h2>
           
-          <p className="opacity-80">
-            For privacy concerns or data deletion requests, please contact us through GitHub issues at:{' '}
-            <a 
-              href="https://github.com/ryuzo-k/kokoro-wiki" 
-              className="text-link hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              github.com/ryuzo-k/kokoro-wiki
-            </a>
-          </p>
+          <div className="opacity-80 space-y-2">
+            <p>
+              For privacy concerns or data deletion requests, please contact:
+            </p>
+            <p>
+              <strong>Ryuzo Kijima</strong><br/>
+              Email: <a href="mailto:ryuzo@kokororesearch.org" className="text-link hover:underline">ryuzo@kokororesearch.org</a><br/>
+              Organization: <a href="https://kokororesearch.org" className="text-link hover:underline" target="_blank" rel="noopener noreferrer">Kokoro Research</a>
+            </p>
+            <p>
+              Or create an issue on GitHub:{' '}
+              <a 
+                href="https://github.com/ryuzo-k/kokoro-wiki" 
+                className="text-link hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                github.com/ryuzo-k/kokoro-wiki
+              </a>
+            </p>
+          </div>
         </section>
       </main>
 
