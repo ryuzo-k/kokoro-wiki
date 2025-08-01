@@ -11,8 +11,11 @@ export default function Home() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
+    if (!user) {
+      router.push('/auth')
+      return
+    }
     if (username.trim()) {
-      // Simple "login" - just redirect to dashboard
       router.push(`/dashboard/${username.trim()}`)
     }
   }
@@ -72,7 +75,7 @@ export default function Home() {
             type="submit"
             className="w-full p-3 bg-foreground text-background hover:opacity-90 transition-opacity"
           >
-            Go to Dashboard (Edit)
+            {user ? 'Go to Dashboard (Edit)' : 'Sign In to Edit'}
           </button>
         </form>
         

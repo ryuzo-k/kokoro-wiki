@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface Props {
   params: { username: string }
@@ -11,6 +12,7 @@ interface Props {
 export default function Dashboard({ params }: Props) {
   const { username } = params
   const router = useRouter()
+  const { user, loading } = useAuth()
   
   // Current entries
   const [currentThought, setCurrentThought] = useState('')
@@ -66,7 +68,8 @@ export default function Dashboard({ params }: Props) {
         .from('thoughts')
         .insert([{
           username,
-          content: currentThought.trim()
+          content: currentThought.trim(),
+          user_id: user!.id
         }])
 
       if (error) throw error
@@ -91,7 +94,8 @@ export default function Dashboard({ params }: Props) {
         .from('people_want_to_talk')
         .insert([{
           username,
-          content: currentPeople.trim()
+          content: currentPeople.trim(),
+          user_id: user!.id
         }])
 
       if (error) throw error
@@ -105,6 +109,42 @@ export default function Dashboard({ params }: Props) {
     } finally {
       setIsLoadingPeople(false)
     }
+  }
+
+  // Authentication guard
+  if (loading) {
+    return (
+      <div className="min-h-screen p-8 flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen p-8 max-w-md mx-auto flex flex-col justify-center">
+        <div className="text-center space-y-6">
+          <h1 className="text-2xl mb-4">Authentication Required</h1>
+          <p className="text-foreground opacity-70 mb-8">
+            You need to sign in to edit your profile.
+          </p>
+          <div className="space-y-3">
+            <a
+              href="/auth"
+              className="block w-full p-3 bg-foreground text-background text-center hover:opacity-90"
+            >
+              Sign In / Sign Up
+            </a>
+            <a
+              href="/"
+              className="block w-full p-3 border border-foreground text-center hover:bg-foreground hover:text-background transition-colors"
+            >
+              Back to Home
+            </a>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
