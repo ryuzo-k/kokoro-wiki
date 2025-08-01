@@ -68,7 +68,7 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-xl mb-4 border-b border-foreground pb-2">Data Storage & Security</h2>
+          <h2 className="text-xl mb-4 border-b border-foreground pb-2">Data Storage and Security</h2>
           
           <ul className="list-disc list-inside space-y-1 opacity-80">
             <li>All data is stored securely in Supabase (PostgreSQL database)</li>
