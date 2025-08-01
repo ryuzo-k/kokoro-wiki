@@ -73,8 +73,14 @@ export default function Home() {
         )}
       </main>
 
-      <footer className="mt-16 text-center text-xs text-foreground opacity-50">
+      <footer className="mt-16 text-center text-xs text-foreground opacity-50 space-y-2">
         <p>Share your thoughts and find people to connect with</p>
+        <p className="text-xs opacity-70">
+          ⚠️ All content is publicly viewable. Only share what you're comfortable making public.
+        </p>
+        <p>
+          <a href="/privacy" className="text-link hover:underline">Privacy Policy</a>
+        </p>
       </footer>
     </div>
   )

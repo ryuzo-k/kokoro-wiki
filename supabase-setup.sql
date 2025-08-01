@@ -22,19 +22,37 @@ CREATE INDEX IF NOT EXISTS idx_people_username_created_at ON people_want_to_talk
 ALTER TABLE thoughts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE people_want_to_talk ENABLE ROW LEVEL SECURITY;
 
--- Create policies to allow public read access
-CREATE POLICY "Allow public read access on thoughts" ON thoughts
+-- Create policies for thoughts table
+-- Anyone can read thoughts (for public profiles)
+CREATE POLICY "Anyone can view thoughts" ON thoughts
   FOR SELECT USING (true);
 
-CREATE POLICY "Allow public read access on people_want_to_talk" ON people_want_to_talk
+-- Anyone can insert their own thoughts (no auth required for simplicity)
+CREATE POLICY "Anyone can insert thoughts" ON thoughts
+  FOR INSERT WITH CHECK (true);
+
+-- Users can only update/delete their own thoughts (if we add auth later)
+CREATE POLICY "Users can update own thoughts" ON thoughts
+  FOR UPDATE USING (auth.uid()::text = username OR auth.uid() IS NULL);
+
+CREATE POLICY "Users can delete own thoughts" ON thoughts
+  FOR DELETE USING (auth.uid()::text = username OR auth.uid() IS NULL);
+
+-- Create policies for people_want_to_talk table
+-- Anyone can read people entries (for public profiles)
+CREATE POLICY "Anyone can view people entries" ON people_want_to_talk
   FOR SELECT USING (true);
 
--- Create policies to allow public insert access
-CREATE POLICY "Allow public insert access on thoughts" ON thoughts
+-- Anyone can insert their own people entries (no auth required for simplicity)
+CREATE POLICY "Anyone can insert people entries" ON people_want_to_talk
   FOR INSERT WITH CHECK (true);
 
-CREATE POLICY "Allow public insert access on people_want_to_talk" ON people_want_to_talk
-  FOR INSERT WITH CHECK (true);
+-- Users can only update/delete their own people entries (if we add auth later)
+CREATE POLICY "Users can update own people entries" ON people_want_to_talk
+  FOR UPDATE USING (auth.uid()::text = username OR auth.uid() IS NULL);
+
+CREATE POLICY "Users can delete own people entries" ON people_want_to_talk
+  FOR DELETE USING (auth.uid()::text = username OR auth.uid() IS NULL);
 
 -- Insert some sample data for testing
 INSERT INTO thoughts (username, content) VALUES 

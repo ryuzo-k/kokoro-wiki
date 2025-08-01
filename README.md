@@ -64,6 +64,18 @@ A Linktree-style personal profile site where you share your thoughts and who you
 3. **Share:** View your public profile at `kokoro.wiki/[username]`
 4. **History:** Each update saves previous content as history
 
+## Privacy & Security
+
+⚠️ **Important**: This is a **public platform** by design. All content shared is publicly viewable.
+
+- **Public Data**: Username, thoughts, people preferences, and all history
+- **No Tracking**: No analytics, cookies, or IP logging
+- **Secure Storage**: Supabase with RLS policies and encryption
+- **Data Control**: Users can update content; deletion available on request
+- **Future Auth**: Planning to add proper authentication for better protection
+
+See [PRIVACY.md](PRIVACY.md) for full privacy policy.
+
 ## Tech Stack
 
 - **Next.js 14** with App Router
