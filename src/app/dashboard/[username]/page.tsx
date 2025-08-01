@@ -73,10 +73,10 @@ export default function Dashboard({ params }: Props) {
       
       // Clear the input after successful save
       setCurrentThought('')
-      alert('思想を保存しました！')
+      alert('Thoughts saved successfully!')
     } catch (error) {
       console.error('Error saving thought:', error)
-      alert('保存に失敗しました')
+      alert('Failed to save')
     } finally {
       setIsLoadingThought(false)
     }
@@ -98,10 +98,10 @@ export default function Dashboard({ params }: Props) {
       
       // Clear the input after successful save
       setCurrentPeople('')
-      alert('話したい人を保存しました！')
+      alert('People saved successfully!')
     } catch (error) {
       console.error('Error saving people:', error)
-      alert('保存に失敗しました')
+      alert('Failed to save')
     } finally {
       setIsLoadingPeople(false)
     }
@@ -111,71 +111,71 @@ export default function Dashboard({ params }: Props) {
     <div className="min-h-screen p-8 max-w-2xl mx-auto">
       <header className="mb-12">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl">@{username} のダッシュボード</h1>
+          <h1 className="text-2xl">@{username} Dashboard</h1>
           <button
             onClick={() => router.push(`/${username}`)}
             className="text-link hover:underline"
           >
-            プロフィールを見る
+            View Profile
           </button>
         </div>
         <p className="text-foreground opacity-70">
-          あなたのURL: <span className="font-medium">kokoro.wiki/{username}</span>
+          Your URL: <span className="font-medium">kokoro.wiki/{username}</span>
         </p>
       </header>
 
       <main className="space-y-12">
-        {/* 思想セクション */}
+        {/* Thoughts Section */}
         <section className="space-y-6">
-          <h2 className="text-xl border-b border-foreground pb-2">現在の思想</h2>
+          <h2 className="text-xl border-b border-foreground pb-2">Current Thoughts</h2>
           
           <div className="space-y-4">
             <textarea
               value={currentThought}
               onChange={(e) => setCurrentThought(e.target.value)}
-              placeholder="今の思想、考え、アイデアを書いてください..."
+              placeholder="Share your current thoughts, ideas, or reflections..."
               className="w-full h-32 p-4 border border-foreground bg-background text-foreground font-mono resize-none focus:outline-none focus:ring-2 focus:ring-link"
               disabled={isLoadingThought}
             />
             
             <div className="flex justify-between items-center">
               <span className="text-sm text-foreground opacity-70">
-                {currentThought.length} 文字
+                {currentThought.length} characters
               </span>
               <button
                 onClick={handleSaveThought}
                 disabled={!currentThought.trim() || isLoadingThought}
                 className="px-6 py-2 bg-foreground text-background hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoadingThought ? '保存中...' : '思想を更新'}
+                {isLoadingThought ? 'Saving...' : 'Update Thoughts'}
               </button>
             </div>
           </div>
         </section>
 
-        {/* 話したい人セクション */}
+        {/* People Section */}
         <section className="space-y-6">
-          <h2 className="text-xl border-b border-foreground pb-2">話したい人</h2>
+          <h2 className="text-xl border-b border-foreground pb-2">People I Want to Talk To</h2>
           
           <div className="space-y-4">
             <textarea
               value={currentPeople}
               onChange={(e) => setCurrentPeople(e.target.value)}
-              placeholder="どんな人と話したいか、どんな話題に興味があるかを書いてください..."
+              placeholder="Describe the types of people you'd like to connect with or topics you're interested in discussing..."
               className="w-full h-32 p-4 border border-foreground bg-background text-foreground font-mono resize-none focus:outline-none focus:ring-2 focus:ring-link"
               disabled={isLoadingPeople}
             />
             
             <div className="flex justify-between items-center">
               <span className="text-sm text-foreground opacity-70">
-                {currentPeople.length} 文字
+                {currentPeople.length} characters
               </span>
               <button
                 onClick={handleSavePeople}
                 disabled={!currentPeople.trim() || isLoadingPeople}
                 className="px-6 py-2 bg-foreground text-background hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoadingPeople ? '保存中...' : '話したい人を更新'}
+                {isLoadingPeople ? 'Saving...' : 'Update People'}
               </button>
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function Dashboard({ params }: Props) {
 
       <footer className="mt-16 pt-8 border-t border-foreground opacity-50 text-center">
         <p className="text-sm">
-          更新すると履歴として蓄積されます
+          Updates will be saved as history
         </p>
       </footer>
     </div>

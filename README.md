@@ -1,16 +1,16 @@
 # kokoro-wiki README
 
-Linktree風の個人プロフィールサイト。思想と話したい人を共有し、履歴として蓄積していくアプリ。
+A Linktree-style personal profile site where you share your thoughts and who you want to connect with, building a history over time.
 
 ## Features
 
 - **IBM Plex Mono** typography with monochrome palette (#111 text, #FAFAFA bg, #00BFFF links)
 - **No animations** - generous vertical whitespace (line-height 1.8)
 - **Linktree-style profile pages:**
-  - `/` - ログイン画面（ユーザーネーム入力）
-  - `/dashboard/[username]` - 編集画面（思想・話したい人を更新）
-  - `/[username]` - 公開プロフィール（現在の内容＋過去の履歴）
-- **履歴機能** - 更新するたびに過去のものが蓄積される
+  - `/` - Login page (username input)
+  - `/dashboard/[username]` - Edit page (update thoughts & people you want to talk to)
+  - `/[username]` - Public profile (current content + past history)
+- **History functionality** - Each update saves previous content as history
 - **ISR** - Profile pages revalidate every 60 seconds
 
 ## Setup
@@ -59,10 +59,10 @@ Linktree風の個人プロフィールサイト。思想と話したい人を共
 
 ## Usage
 
-1. **ログイン:** トップページでユーザーネームを入力
-2. **編集:** ダッシュボードで「現在の思想」と「話したい人」を更新
-3. **公開:** あなたのURL `kokoro.wiki/[username]` で公開プロフィールを確認
-4. **履歴:** 更新するたびに過去の内容が履歴として蓄積される
+1. **Login:** Enter your username on the homepage
+2. **Edit:** Update "Current Thoughts" and "People I Want to Talk To" on the dashboard
+3. **Share:** View your public profile at `kokoro.wiki/[username]`
+4. **History:** Each update saves previous content as history
 
 ## Tech Stack
 

@@ -71,10 +71,10 @@ export default async function UserProfile({ params }: Props) {
       </header>
 
       <main className="space-y-16">
-        {/* 現在の思想 */}
+        {/* Current Thoughts */}
         {currentThought && (
           <section className="space-y-6">
-            <h2 className="text-xl border-b border-foreground pb-2">現在の思想</h2>
+            <h2 className="text-xl border-b border-foreground pb-2">Current Thoughts</h2>
             <div className="p-6 border border-foreground">
               <div className="whitespace-pre-wrap text-foreground leading-relaxed">
                 {currentThought.content}
@@ -90,10 +90,10 @@ export default async function UserProfile({ params }: Props) {
               </div>
             </div>
             
-            {/* 思想の履歴 */}
+            {/* Thought History */}
             {thoughtHistory.length > 0 && (
               <div className="space-y-4">
-                <h3 className="text-lg text-foreground opacity-80">過去の思想</h3>
+                <h3 className="text-lg text-foreground opacity-80">Past Thoughts</h3>
                 <div className="space-y-4 pl-4">
                   {thoughtHistory.map((thought) => (
                     <div key={thought.id} className="p-4 border border-foreground opacity-70">
@@ -115,10 +115,10 @@ export default async function UserProfile({ params }: Props) {
           </section>
         )}
 
-        {/* 話したい人 */}
+        {/* People I Want to Talk To */}
         {currentPeople && (
           <section className="space-y-6">
-            <h2 className="text-xl border-b border-foreground pb-2">話したい人</h2>
+            <h2 className="text-xl border-b border-foreground pb-2">People I Want to Talk To</h2>
             <div className="p-6 border border-foreground">
               <div className="whitespace-pre-wrap text-foreground leading-relaxed">
                 {currentPeople.content}
@@ -134,10 +134,10 @@ export default async function UserProfile({ params }: Props) {
               </div>
             </div>
             
-            {/* 話したい人の履歴 */}
+            {/* People History */}
             {peopleHistory.length > 0 && (
               <div className="space-y-4">
-                <h3 className="text-lg text-foreground opacity-80">過去に話したかった人</h3>
+                <h3 className="text-lg text-foreground opacity-80">Past People I Wanted to Talk To</h3>
                 <div className="space-y-4 pl-4">
                   {peopleHistory.map((person) => (
                     <div key={person.id} className="p-4 border border-foreground opacity-70">
@@ -163,7 +163,7 @@ export default async function UserProfile({ params }: Props) {
         {!currentThought && !currentPeople && (
           <div className="text-center py-16">
             <p className="text-foreground opacity-70">
-              まだ何も投稿されていません
+              Nothing has been posted yet
             </p>
           </div>
         )}
@@ -174,7 +174,7 @@ export default async function UserProfile({ params }: Props) {
           href="/" 
           className="text-link hover:underline"
         >
-          kokoro.wiki に戻る
+          Back to kokoro.wiki
         </a>
       </footer>
     </div>
