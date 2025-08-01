@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { CommandPalette } from "@/components/CommandPalette";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 export const metadata: Metadata = {
   title: "kokoro-wiki",
@@ -14,9 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-mono antialiased">
-        {children}
-        <CommandPalette />
+      <body className="font-mono bg-background text-foreground leading-relaxed">
+        <AuthProvider>
+          {children}
+          <CommandPalette />
+        </AuthProvider>
       </body>
     </html>
   );

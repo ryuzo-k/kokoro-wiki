@@ -24,19 +24,19 @@ ALTER TABLE people_want_to_talk ENABLE ROW LEVEL SECURITY;
 
 -- Create policies for thoughts table
 -- Anyone can read thoughts (for public profiles)
-CREATE POLICY "Anyone can view thoughts" ON thoughts
+CREATE POLICY "Allow public read access" ON thoughts
   FOR SELECT USING (true);
 
 -- Anyone can insert their own thoughts (no auth required for simplicity)
-CREATE POLICY "Anyone can insert thoughts" ON thoughts
-  FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow insert for authenticated users" ON thoughts
+  FOR INSERT TO authenticated WITH CHECK (true);
 
 -- Users can only update/delete their own thoughts (if we add auth later)
-CREATE POLICY "Users can update own thoughts" ON thoughts
-  FOR UPDATE USING (auth.uid()::text = username OR auth.uid() IS NULL);
+CREATE POLICY "Allow update for authenticated users" ON thoughts
+  FOR UPDATE TO authenticated USING (auth.uid()::text = username);
 
-CREATE POLICY "Users can delete own thoughts" ON thoughts
-  FOR DELETE USING (auth.uid()::text = username OR auth.uid() IS NULL);
+CREATE POLICY "Allow delete for authenticated users" ON thoughts
+  FOR DELETE TO authenticated USING (auth.uid()::text = username OR auth.uid() IS NULL);
 
 -- Create policies for people_want_to_talk table
 -- Anyone can read people entries (for public profiles)
