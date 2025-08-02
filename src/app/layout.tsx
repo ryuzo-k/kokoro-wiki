@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   title: "Kokoro Wiki",
   description: "A minimalist wiki for thoughts and connections",
   icons: {
-    icon: "/ogp-image.png",
-    shortcut: "/ogp-image.png",
-    apple: "/ogp-image.png",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
   openGraph: {
     title: "Kokoro Wiki",
