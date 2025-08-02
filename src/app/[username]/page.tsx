@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { notFound } from 'next/navigation'
+import { notFound, useRouter } from 'next/navigation'
 import { formatToLocalTime, formatDateForGrouping } from '@/lib/dateUtils'
 import { supabase } from '@/lib/supabase'
 
@@ -23,29 +23,39 @@ interface PeopleEntry {
   created_at: string
 }
 
-export default function UserProfile({ params }: Props) {
+export default function UserProfile({ params }: { params: { username: string } }) {
   const { username } = params
+  const router = useRouter()
+  const normalizedUsername = username.toLowerCase()
   const [loading, setLoading] = useState(true)
   const [currentThought, setCurrentThought] = useState<ThoughtEntry | null>(null)
   const [thoughtHistory, setThoughtHistory] = useState<ThoughtEntry[]>([])
   const [currentPeople, setCurrentPeople] = useState<PeopleEntry | null>(null)
   const [peopleHistory, setPeopleHistory] = useState<PeopleEntry[]>([])
 
+  // Redirect uppercase usernames to lowercase
+  useEffect(() => {
+    if (username !== normalizedUsername) {
+      router.replace(`/${normalizedUsername}`)
+      return
+    }
+  }, [username, normalizedUsername, router])
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch thoughts (case insensitive)
+        // Fetch thoughts using normalized username
         const { data: thoughts, error: thoughtsError } = await supabase
           .from('thoughts')
           .select('*')
-          .ilike('username', username)
+          .eq('username', normalizedUsername)
           .order('created_at', { ascending: false })
 
-        // Fetch people (case insensitive)
+        // Fetch people using normalized username
         const { data: people, error: peopleError } = await supabase
           .from('people_want_to_talk')
           .select('*')
-          .ilike('username', username)
+          .eq('username', normalizedUsername)
           .order('created_at', { ascending: false })
 
         if (thoughtsError && thoughtsError.code !== 'PGRST116') {

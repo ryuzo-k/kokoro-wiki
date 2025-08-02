@@ -106,19 +106,20 @@ export default function SetupUsername() {
     setErrorMessage('')
 
     try {
-      // Create user profile
+      // Create user profile with normalized username
+      const normalizedUsername = username.trim().toLowerCase()
       const { error } = await supabase
         .from('user_profiles')
         .insert([{
           user_id: user.id,
           user_email: user.email,
-          username: username.trim()
+          username: normalizedUsername
         }])
 
       if (error) throw error
 
       // Redirect to dashboard
-      router.push(`/dashboard/${username.trim()}`)
+      router.push(`/dashboard/${normalizedUsername}`)
     } catch (error) {
       console.error('Error creating profile:', error)
       setErrorMessage('Failed to create profile. Please try again.')

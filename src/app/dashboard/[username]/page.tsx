@@ -9,8 +9,9 @@ interface Props {
   params: { username: string }
 }
 
-export default function Dashboard({ params }: Props) {
+export default function Dashboard({ params }: { params: { username: string } }) {
   const { username } = params
+  const normalizedUsername = username.toLowerCase()
   const router = useRouter()
   const { user, loading } = useAuth()
   
@@ -79,6 +80,20 @@ export default function Dashboard({ params }: Props) {
   }
   
   // Load current entries and check username ownership on mount
+  // Redirect uppercase usernames to lowercase
+  useEffect(() => {
+    if (username !== normalizedUsername) {
+      router.replace(`/dashboard/${normalizedUsername}`)
+      return
+    }
+  }, [username, normalizedUsername, router])
+
+  useEffect(() => {
+    if (!user && !loading) {
+      router.push('/auth')
+    }
+  }, [user, loading, router])
+
   useEffect(() => {
     checkUsernameOwnership()
     loadCurrentEntries()
@@ -117,17 +132,17 @@ export default function Dashboard({ params }: Props) {
   }
 
   const handleSaveThought = async () => {
-    if (!currentThought.trim() || isLoadingThought) return
+    if (!currentThought.trim() || isLoadingThought || !user) return
     
     setIsLoadingThought(true)
     try {
       const { error } = await supabase
         .from('thoughts')
         .insert([{
-          username,
+          username: normalizedUsername,
           content: currentThought.trim(),
-          user_id: user!.id,
-          user_email: user!.email
+          user_id: user.id,
+          user_email: user.email
         }])
 
       if (error) throw error
@@ -144,17 +159,17 @@ export default function Dashboard({ params }: Props) {
   }
 
   const handleSavePeople = async () => {
-    if (!currentPeople.trim() || isLoadingPeople) return
+    if (!currentPeople.trim() || isLoadingPeople || !user) return
     
     setIsLoadingPeople(true)
     try {
       const { error } = await supabase
         .from('people_want_to_talk')
         .insert([{
-          username,
+          username: normalizedUsername,
           content: currentPeople.trim(),
-          user_id: user!.id,
-          user_email: user!.email
+          user_id: user.id,
+          user_email: user.email
         }])
 
       if (error) throw error
