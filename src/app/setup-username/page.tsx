@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
 
-export default function SetupUsername() {
+function SetupUsernameContent() {
   const [username, setUsername] = useState('')
   const [usernameStatus, setUsernameStatus] = useState<'checking' | 'available' | 'taken' | 'invalid' | null>(null)
   const [isCheckingUsername, setIsCheckingUsername] = useState(false)
@@ -227,5 +227,13 @@ export default function SetupUsername() {
         </form>
       </main>
     </div>
+  )
+}
+
+export default function SetupUsername() {
+  return (
+    <Suspense fallback={<div className="min-h-screen p-8 flex items-center justify-center">Loading...</div>}>
+      <SetupUsernameContent />
+    </Suspense>
   )
 }
