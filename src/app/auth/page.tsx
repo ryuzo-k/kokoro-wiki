@@ -34,7 +34,7 @@ export default function AuthPage() {
         if (error) {
           setError(error.message)
         } else {
-          router.push('/')
+          router.push('/setup-username')
         }
       }
     } catch (err) {

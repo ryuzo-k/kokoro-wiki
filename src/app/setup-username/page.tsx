@@ -1,30 +1,31 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
 
-export default function Home() {
+export default function SetupUsername() {
   const [username, setUsername] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
   const [usernameStatus, setUsernameStatus] = useState<'checking' | 'available' | 'taken' | 'invalid' | null>(null)
   const [isCheckingUsername, setIsCheckingUsername] = useState(false)
+  const [isCreating, setIsCreating] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  
+  const { user, loading } = useAuth()
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const { user, signOut, loading } = useAuth()
 
+  // Redirect if not logged in
   useEffect(() => {
-    const error = searchParams.get('error')
-    if (error === 'username-taken') {
-      setErrorMessage('This username is already taken by another user.')
+    if (!loading && !user) {
+      router.push('/auth')
     }
-  }, [searchParams])
+  }, [user, loading, router])
 
-  // Auto-redirect logged in users
+  // Check if user already has a profile
   useEffect(() => {
-    const checkUserProfile = async () => {
-      if (user && !loading) {
+    const checkExistingProfile = async () => {
+      if (user) {
         try {
           const { data: userProfile } = await supabase
             .from('user_profiles')
@@ -33,21 +34,17 @@ export default function Home() {
             .single()
           
           if (userProfile) {
-            // User has existing profile, redirect to dashboard
+            // User already has a profile, redirect to dashboard
             router.push(`/dashboard/${userProfile.username}`)
-          } else {
-            // User needs to set up username
-            router.push('/setup-username')
           }
         } catch (error) {
-          // No existing profile, redirect to setup
-          router.push('/setup-username')
+          // No existing profile, stay on setup page
         }
       }
     }
 
-    checkUserProfile()
-  }, [user, loading, router])
+    checkExistingProfile()
+  }, [user, router])
 
   // Check username availability
   const checkUsernameAvailability = async (usernameToCheck: string) => {
@@ -71,7 +68,6 @@ export default function Home() {
     setUsernameStatus('checking')
 
     try {
-      // Check if username exists in user_profiles
       const { data: existingProfile } = await supabase
         .from('user_profiles')
         .select('username')
@@ -84,7 +80,6 @@ export default function Home() {
         setUsernameStatus('available')
       }
     } catch (error) {
-      // If no profile found, username is available
       setUsernameStatus('available')
     } finally {
       setIsCheckingUsername(false)
@@ -97,25 +92,38 @@ export default function Home() {
       if (username) {
         checkUsernameAvailability(username)
       }
-    }, 500) // 500ms delay
+    }, 500)
 
     return () => clearTimeout(timeoutId)
   }, [username])
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleCreateProfile = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!user) {
-      router.push('/auth')
-      return
-    }
-    if (username.trim()) {
-      router.push(`/dashboard/${username.trim()}`)
-    }
-  }
+    
+    if (!user || usernameStatus !== 'available') return
 
-  const handleViewProfile = () => {
-    if (username.trim()) {
-      router.push(`/${username.trim()}`)
+    setIsCreating(true)
+    setErrorMessage('')
+
+    try {
+      // Create user profile
+      const { error } = await supabase
+        .from('user_profiles')
+        .insert([{
+          user_id: user.id,
+          user_email: user.email,
+          username: username.trim()
+        }])
+
+      if (error) throw error
+
+      // Redirect to dashboard
+      router.push(`/dashboard/${username.trim()}`)
+    } catch (error) {
+      console.error('Error creating profile:', error)
+      setErrorMessage('Failed to create profile. Please try again.')
+    } finally {
+      setIsCreating(false)
     }
   }
 
@@ -127,28 +135,24 @@ export default function Home() {
     )
   }
 
+  if (!user) {
+    return null // Will redirect to auth
+  }
+
   return (
     <div className="min-h-screen p-8 max-w-md mx-auto flex flex-col justify-center">
-      <header className="text-center mb-16">
-        <h1 className="text-3xl mb-4">kokoro.wiki</h1>
+      <header className="text-center mb-12">
+        <h1 className="text-3xl mb-4">Choose Your Username</h1>
         <p className="text-foreground opacity-70">
-          Share your thoughts and who you want to connect with
+          This will be your unique identifier on kokoro.wiki
         </p>
-        {user && (
-          <div className="mt-4 text-sm opacity-70">
-            Signed in as: {user.email}
-            <button
-              onClick={() => signOut()}
-              className="ml-4 text-link hover:underline"
-            >
-              Sign Out
-            </button>
-          </div>
-        )}
+        <p className="text-sm text-foreground opacity-50 mt-2">
+          Signed in as: {user.email}
+        </p>
       </header>
 
-      <main className="space-y-8">
-        <form onSubmit={handleLogin} className="space-y-6">
+      <main>
+        <form onSubmit={handleCreateProfile} className="space-y-6">
           <div>
             <label htmlFor="username" className="block text-sm mb-2">
               Username
@@ -161,6 +165,7 @@ export default function Home() {
               placeholder="your-username"
               className="w-full p-3 border border-foreground bg-background text-foreground font-mono focus:outline-none focus:ring-2 focus:ring-link"
               required
+              disabled={isCreating}
             />
             
             {/* Username Status */}
@@ -196,45 +201,21 @@ export default function Home() {
             </div>
           )}
 
+          {username && (
+            <div className="text-center text-sm text-foreground opacity-70">
+              Your URL: <span className="font-medium">kokoro.wiki/{username}</span>
+            </div>
+          )}
+
           <button
             type="submit"
-            disabled={!!username && (usernameStatus === 'taken' || usernameStatus === 'invalid' || usernameStatus === 'checking')}
-            className="w-full p-3 bg-foreground text-background hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={!username || usernameStatus !== 'available' || isCreating}
+            className="w-full p-3 bg-foreground text-background hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {user ? 'Go to Dashboard (Edit)' : 'Sign In to Edit'}
+            {isCreating ? 'Creating Profile...' : 'Create Profile'}
           </button>
         </form>
-        
-        <button
-          onClick={handleViewProfile}
-          className="w-full p-3 border border-foreground hover:bg-foreground hover:text-background transition-colors"
-        >
-          View Profile
-        </button>
-
-        {username && (
-          <div className="text-center text-sm text-foreground opacity-70">
-            Your URL: <span className="font-medium">kokoro.wiki/{username}</span>
-          </div>
-        )}
       </main>
-
-      <footer className="mt-16 text-center text-xs text-foreground opacity-50 space-y-2">
-        <p>Share your thoughts and find people to connect with</p>
-        {!user && (
-          <p>
-            <a href="/auth" className="text-link hover:underline">
-              Sign In / Sign Up
-            </a>
-          </p>
-        )}
-        <p>
-          View our{' '}
-          <a href="/privacy" className="text-link hover:underline">
-            Privacy Policy
-          </a>
-        </p>
-      </footer>
     </div>
   )
 }
