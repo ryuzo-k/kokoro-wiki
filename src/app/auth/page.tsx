@@ -2,82 +2,79 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
 
 function AuthContent() {
-  const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [mode, setMode] = useState<'signin' | 'signup'>('signup')
   const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
   const [targetUsername, setTargetUsername] = useState('')
   
-  const { signUp, signIn } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
-
-  // Check username and set mode automatically
+  
   useEffect(() => {
-    const checkUsername = async () => {
-      const username = searchParams.get('username')
-      if (username) {
-        setTargetUsername(username)
-        
-        try {
-          // Check if username exists
-          const { data: existingProfile } = await supabase
-            .from('user_profiles')
-            .select('username')
-            .ilike('username', username)
-            .single()
-          
-          if (existingProfile) {
-            // Username exists - set to login mode
-            setIsSignUp(false)
-            setMessage(`Username "${username}" already exists. Please sign in.`)
-          } else {
-            // Username available - set to signup mode
-            setIsSignUp(true)
-            setMessage(`Username "${username}" is available! Create your account.`)
-          }
-        } catch (error) {
-          // Username available - set to signup mode
-          setIsSignUp(true)
-          setMessage(`Username "${username}" is available! Create your account.`)
-        }
-      }
+    const username = searchParams.get('username')
+    const authMode = searchParams.get('mode')
+    
+    if (username) {
+      setTargetUsername(username)
     }
-
-    checkUsername()
+    
+    if (authMode === 'signin' || authMode === 'signup') {
+      setMode(authMode)
+    }
   }, [searchParams])
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!email || !password) return
+    
     setLoading(true)
     setError('')
     setMessage('')
-
+    
     try {
-      if (isSignUp) {
-        const { error } = await signUp(email, password)
+      if (mode === 'signup') {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+        })
+        
         if (error) {
           setError(error.message)
         } else {
           setMessage('Check your email for the confirmation link!')
         }
       } else {
-        const { error } = await signIn(email, password)
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        })
+        
         if (error) {
           setError(error.message)
         } else {
-          // Redirect to setup-username with target username if available
-          const redirectUrl = targetUsername ? `/setup-username?username=${encodeURIComponent(targetUsername)}` : '/setup-username'
-          router.push(redirectUrl)
+          // Check if user already has a profile
+          const { data: profile } = await supabase
+            .from('user_profiles')
+            .select('username')
+            .eq('user_id', data.user.id)
+            .single()
+          
+          if (profile) {
+            // User has profile, go to dashboard
+            router.push(`/dashboard/${profile.username}`)
+          } else {
+            // New user, go to setup
+            router.push(`/setup-username?username=${targetUsername}`)
+          }
         }
       }
-    } catch (err) {
+    } catch (error) {
       setError('An unexpected error occurred')
     } finally {
       setLoading(false)
@@ -85,103 +82,83 @@ function AuthContent() {
   }
 
   return (
-    <div className="min-h-screen p-8 max-w-md mx-auto flex flex-col justify-center">
-      <header className="text-center mb-12">
-        <h1 className="text-3xl mb-4">{isSignUp ? 'Create Account' : 'Welcome Back'}</h1>
-        <p className="text-foreground opacity-70">
-          {isSignUp ? 'Join kokoro.wiki to share your thoughts' : 'Sign in to your kokoro.wiki account'}
-        </p>
-      </header>
-
-      <main>
-        <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="min-h-screen bg-background text-foreground p-8">
+      <div className="max-w-md mx-auto">
+        <h1 className="text-2xl mb-8 text-center">
+          {mode === 'signup' ? 'Create Account' : 'Sign In'}
+        </h1>
+        
+        {targetUsername && (
+          <div className="mb-6 p-4 border border-foreground">
+            <p className="text-sm">Username: <strong>@{targetUsername}</strong></p>
+          </div>
+        )}
+        
+        <form onSubmit={handleAuth} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm mb-2">
-              Email
-            </label>
+            <label className="block text-sm mb-2">Email</label>
             <input
               type="email"
-              id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              className="w-full p-3 border border-foreground bg-background text-foreground font-mono focus:outline-none focus:ring-2 focus:ring-link"
+              className="w-full p-3 border border-foreground bg-background text-foreground"
               required
-              disabled={loading}
             />
           </div>
-
+          
           <div>
-            <label htmlFor="password" className="block text-sm mb-2">
-              Password
-            </label>
+            <label className="block text-sm mb-2">Password</label>
             <input
               type="password"
-              id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              className="w-full p-3 border border-foreground bg-background text-foreground font-mono focus:outline-none focus:ring-2 focus:ring-link"
+              className="w-full p-3 border border-foreground bg-background text-foreground"
               required
-              disabled={loading}
               minLength={6}
             />
           </div>
-
-          {error && (
-            <div className="p-3 border border-foreground bg-background text-foreground opacity-80">
-              <p className="text-sm">❌ {error}</p>
-            </div>
-          )}
-
-          {message && (
-            <div className="p-3 border border-foreground bg-background text-foreground opacity-80">
-              <p className="text-sm">✅ {message}</p>
-            </div>
-          )}
-
+          
           <button
             type="submit"
             disabled={loading}
-            className="w-full p-3 bg-foreground text-background hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full p-3 bg-foreground text-background hover:opacity-90 disabled:opacity-50"
           >
-            {loading ? 'Loading...' : (isSignUp ? 'Sign Up' : 'Sign In')}
+            {loading ? 'Loading...' : (mode === 'signup' ? 'Create Account' : 'Sign In')}
           </button>
         </form>
-
+        
         <div className="mt-6 text-center">
           <button
             onClick={() => {
-              setIsSignUp(!isSignUp)
+              setMode(mode === 'signup' ? 'signin' : 'signup')
               setError('')
               setMessage('')
             }}
-            className="text-link hover:underline"
-            disabled={loading}
+            className="text-sm underline hover:no-underline"
           >
-            {isSignUp 
-              ? 'Already have an account? Sign in' 
-              : "Don't have an account? Sign up"
-            }
+            {mode === 'signup' ? 'Already have an account? Sign in' : 'Need an account? Sign up'}
           </button>
         </div>
-
-        <div className="mt-8 text-center">
-          <a
-            href="/"
-            className="text-foreground opacity-70 hover:opacity-100 text-sm"
-          >
-            ← Back to Home
-          </a>
-        </div>
-      </main>
+        
+        {error && (
+          <div className="mt-4 p-3 border border-foreground text-red-600">
+            <p className="text-sm">{error}</p>
+          </div>
+        )}
+        
+        {message && (
+          <div className="mt-4 p-3 border border-foreground">
+            <p className="text-sm">{message}</p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
 
 export default function AuthPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen p-8 flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <AuthContent />
     </Suspense>
   )
