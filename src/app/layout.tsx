@@ -4,13 +4,18 @@ import { CommandPalette } from "@/components/CommandPalette";
 import { AuthProvider } from "@/contexts/AuthContext";
 
 export const metadata: Metadata = {
-  title: "kokoro-wiki",
+  title: "Kokoro Wiki",
   description: "A minimalist wiki for thoughts and connections",
+  icons: {
+    icon: "/ogp-image.png",
+    shortcut: "/ogp-image.png",
+    apple: "/ogp-image.png",
+  },
   openGraph: {
-    title: "kokoro-wiki",
+    title: "Kokoro Wiki",
     description: "Share your thoughts and connect with like-minded people",
     url: "https://kokoro-wiki.vercel.app",
-    siteName: "kokoro-wiki",
+    siteName: "Kokoro Wiki",
     images: [
       {
         url: "/ogp-image.png",
@@ -23,7 +28,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "kokoro-wiki",
+    title: "Kokoro Wiki",
     description: "Share your thoughts and connect with like-minded people",
     images: ["/ogp-image.png"],
   },
