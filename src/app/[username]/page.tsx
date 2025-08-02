@@ -1,5 +1,9 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import { notFound } from 'next/navigation'
-import { createServerClient } from '@/lib/supabase'
+import { formatToLocalTime, formatDateForGrouping } from '@/lib/dateUtils'
+import { supabase } from '@/lib/supabase'
 
 interface Props {
   params: { username: string }
@@ -19,15 +23,19 @@ interface PeopleEntry {
   created_at: string
 }
 
-// ISR with 60 second revalidation
-export const revalidate = 60
-
-export default async function UserProfile({ params }: Props) {
+export default function UserProfile({ params }: Props) {
   const { username } = params
-  const supabase = createServerClient()
+  const [loading, setLoading] = useState(true)
+  const [currentThought, setCurrentThought] = useState<ThoughtEntry | null>(null)
+  const [thoughtHistory, setThoughtHistory] = useState<ThoughtEntry[]>([])
+  const [currentPeople, setCurrentPeople] = useState<PeopleEntry | null>(null)
+  const [peopleHistory, setPeopleHistory] = useState<PeopleEntry[]>([])
 
-  // Fetch thoughts
-  const { data: thoughts, error: thoughtsError } = await supabase
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch thoughts
+        const { data: thoughts, error: thoughtsError } = await supabase
     .from('thoughts')
     .select('*')
     .eq('username', username)
@@ -86,13 +94,7 @@ export default async function UserProfile({ params }: Props) {
                 {currentThought.content}
               </div>
               <div className="mt-4 text-xs text-foreground opacity-50">
-                {new Date(currentThought.created_at).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })}
+                {formatToLocalTime(currentThought.created_at)}
               </div>
             </div>
             
@@ -107,11 +109,7 @@ export default async function UserProfile({ params }: Props) {
                         {thought.content}
                       </div>
                       <div className="mt-2 text-xs text-foreground opacity-50">
-                        {new Date(thought.created_at).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
+                        {formatToLocalTime(thought.created_at)}
                       </div>
                     </div>
                   ))}
@@ -130,13 +128,7 @@ export default async function UserProfile({ params }: Props) {
                 {currentPeople.content}
               </div>
               <div className="mt-4 text-xs text-foreground opacity-50">
-                {new Date(currentPeople.created_at).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })}
+                {formatToLocalTime(currentPeople.created_at)}
               </div>
             </div>
             
@@ -151,11 +143,7 @@ export default async function UserProfile({ params }: Props) {
                         {person.content}
                       </div>
                       <div className="mt-2 text-xs text-foreground opacity-50">
-                        {new Date(person.created_at).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
+                        {formatToLocalTime(person.created_at)}
                       </div>
                     </div>
                   ))}

@@ -22,6 +22,15 @@ export default function Dashboard({ params }: Props) {
   const [isLoadingThought, setIsLoadingThought] = useState(false)
   const [isLoadingPeople, setIsLoadingPeople] = useState(false)
   
+  // Success message states
+  const [successMessage, setSuccessMessage] = useState('')
+  
+  // Show success message for 3 seconds
+  const showSuccessMessage = (message: string) => {
+    setSuccessMessage(message)
+    setTimeout(() => setSuccessMessage(''), 3000)
+  }
+  
   // Load current entries on mount
   useEffect(() => {
     loadCurrentEntries()
@@ -76,7 +85,7 @@ export default function Dashboard({ params }: Props) {
       
       // Clear the input after successful save
       setCurrentThought('')
-      alert('Thoughts saved successfully!')
+      showSuccessMessage('Thoughts saved successfully!')
     } catch (error) {
       console.error('Error saving thought:', error)
       alert('Failed to save')
@@ -102,7 +111,7 @@ export default function Dashboard({ params }: Props) {
       
       // Clear the input after successful save
       setCurrentPeople('')
-      alert('People saved successfully!')
+      showSuccessMessage('People saved successfully!')
     } catch (error) {
       console.error('Error saving people:', error)
       alert('Failed to save')
@@ -125,7 +134,7 @@ export default function Dashboard({ params }: Props) {
       <div className="min-h-screen p-8 max-w-md mx-auto flex flex-col justify-center">
         <div className="text-center space-y-6">
           <h1 className="text-2xl mb-4">Authentication Required</h1>
-          <p className="text-foreground opacity-70 mb-8">
+          <p className="text-foreground opacity-70">
             You need to sign in to edit your profile.
           </p>
           <div className="space-y-3">
@@ -167,6 +176,13 @@ export default function Dashboard({ params }: Props) {
             ⚠️ <strong>Privacy Notice:</strong> All content you share will be publicly viewable at your profile URL. Only share information you're comfortable making public.
           </p>
         </div>
+        
+        {/* Success Message */}
+        {successMessage && (
+          <div className="mt-4 p-3 bg-foreground text-background">
+            <p className="text-sm">✅ {successMessage}</p>
+          </div>
+        )}
       </header>
 
       <main className="space-y-12">
