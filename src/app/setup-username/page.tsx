@@ -56,6 +56,22 @@ function SetupUsernameContent() {
     checkExistingProfile()
   }, [user, router])
 
+  // Auto-fill username from URL params or user metadata
+  useEffect(() => {
+    if (user && !username) {
+      // First try URL params
+      const urlParams = new URLSearchParams(window.location.search)
+      const usernameParam = urlParams.get('username')
+      
+      if (usernameParam) {
+        setUsername(usernameParam)
+      } else if (user.user_metadata?.preferred_username) {
+        // Fallback to user metadata
+        setUsername(user.user_metadata.preferred_username)
+      }
+    }
+  }, [user, username])
+
   // Check username availability
   const checkUsernameAvailability = async (usernameToCheck: string) => {
     if (!usernameToCheck.trim()) {

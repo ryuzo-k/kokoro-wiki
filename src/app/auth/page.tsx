@@ -51,6 +51,11 @@ function AuthContent() {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: {
+              preferred_username: targetUsername
+            }
+          }
         })
         
         if (error) {
