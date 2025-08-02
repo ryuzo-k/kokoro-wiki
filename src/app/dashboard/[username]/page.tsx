@@ -13,7 +13,7 @@ export default function Dashboard({ params }: { params: { username: string } }) 
   const { username } = params
   const normalizedUsername = username.toLowerCase()
   const router = useRouter()
-  const { user, loading } = useAuth()
+  const { user, loading, signOut } = useAuth()
   
   // Current entries
   const [currentThought, setCurrentThought] = useState('')
@@ -226,12 +226,23 @@ export default function Dashboard({ params }: { params: { username: string } }) 
       <header className="mb-12">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl">@{username} Dashboard</h1>
-          <button
-            onClick={() => router.push(`/${username}`)}
-            className="text-link hover:underline"
-          >
-            View Profile
-          </button>
+          <div className="flex gap-4">
+            <button
+              onClick={() => router.push(`/${username}`)}
+              className="text-link hover:underline"
+            >
+              View Profile
+            </button>
+            <button
+              onClick={() => {
+                signOut()
+                router.push('/')
+              }}
+              className="text-foreground opacity-70 hover:opacity-100"
+            >
+              Logout
+            </button>
+          </div>
         </div>
         <p className="text-foreground opacity-70">
           Your URL: <span className="font-medium">kokoro.wiki/{username}</span>

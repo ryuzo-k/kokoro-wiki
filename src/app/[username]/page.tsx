@@ -28,9 +28,10 @@ export default function UserProfile({ params }: { params: { username: string } }
   const { username } = params
   const router = useRouter()
   const normalizedUsername = username.toLowerCase()
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
   const [loading, setLoading] = useState(true)
   const [isOwner, setIsOwner] = useState(false)
+  const [displayName, setDisplayName] = useState('')
   const [currentThought, setCurrentThought] = useState<ThoughtEntry | null>(null)
   const [thoughtHistory, setThoughtHistory] = useState<ThoughtEntry[]>([])
   const [currentPeople, setCurrentPeople] = useState<PeopleEntry | null>(null)
@@ -73,6 +74,17 @@ export default function UserProfile({ params }: { params: { username: string } }
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch user profile for display name
+        const { data: userProfile } = await supabase
+          .from('user_profiles')
+          .select('display_name')
+          .eq('username', normalizedUsername)
+          .single()
+        
+        if (userProfile) {
+          setDisplayName(userProfile.display_name)
+        }
+
         // Fetch thoughts using normalized username
         const { data: thoughts, error: thoughtsError } = await supabase
           .from('thoughts')
@@ -127,19 +139,33 @@ export default function UserProfile({ params }: { params: { username: string } }
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1"></div>
           <div className="flex-1 text-center">
-            <h1 className="text-3xl mb-2">@{username}</h1>
+            {displayName && (
+              <h1 className="text-3xl mb-1">{displayName}</h1>
+            )}
+            <h2 className={`${displayName ? 'text-xl' : 'text-3xl'} mb-2 text-foreground opacity-80`}>@{username}</h2>
             <p className="text-foreground opacity-70">
               kokoro.wiki/{username}
             </p>
           </div>
-          <div className="flex-1 flex justify-end">
+          <div className="flex-1 flex justify-end gap-2">
             {isOwner && (
-              <button
-                onClick={() => router.push(`/dashboard/${normalizedUsername}`)}
-                className="px-4 py-2 border border-foreground bg-background text-foreground hover:bg-foreground hover:text-background transition-colors text-sm"
-              >
-                Edit Profile
-              </button>
+              <>
+                <button
+                  onClick={() => router.push(`/dashboard/${normalizedUsername}`)}
+                  className="px-4 py-2 border border-foreground bg-background text-foreground hover:bg-foreground hover:text-background transition-colors text-sm"
+                >
+                  Edit Profile
+                </button>
+                <button
+                  onClick={() => {
+                    signOut()
+                    router.push('/')
+                  }}
+                  className="px-4 py-2 border border-foreground bg-background text-foreground hover:bg-foreground hover:text-background transition-colors text-sm"
+                >
+                  Logout
+                </button>
+              </>
             )}
           </div>
         </div>

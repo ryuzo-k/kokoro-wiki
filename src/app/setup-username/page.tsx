@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase'
 
 function SetupUsernameContent() {
   const [username, setUsername] = useState('')
+  const [displayName, setDisplayName] = useState('')
   const [usernameStatus, setUsernameStatus] = useState<'checking' | 'available' | 'taken' | 'invalid' | null>(null)
   const [isCheckingUsername, setIsCheckingUsername] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
@@ -109,7 +110,7 @@ function SetupUsernameContent() {
   const handleCreateProfile = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!user || usernameStatus !== 'available') return
+    if (!user || usernameStatus !== 'available' || !displayName.trim()) return
 
     setIsCreating(true)
     setErrorMessage('')
@@ -122,7 +123,8 @@ function SetupUsernameContent() {
         .insert([{
           user_id: user.id,
           user_email: user.email,
-          username: normalizedUsername
+          username: normalizedUsername,
+          display_name: displayName.trim()
         }])
 
       if (error) throw error
@@ -163,6 +165,22 @@ function SetupUsernameContent() {
 
       <main>
         <form onSubmit={handleCreateProfile} className="space-y-6">
+          <div>
+            <label htmlFor="displayName" className="block text-sm mb-2">
+              Your Name
+            </label>
+            <input
+              type="text"
+              id="displayName"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="Your full name"
+              className="w-full p-3 border border-foreground bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-link"
+              required
+              disabled={isCreating}
+            />
+          </div>
+
           <div>
             <label htmlFor="username" className="block text-sm mb-2">
               Username
@@ -219,7 +237,7 @@ function SetupUsernameContent() {
 
           <button
             type="submit"
-            disabled={!username || usernameStatus !== 'available' || isCreating}
+            disabled={!username || !displayName.trim() || usernameStatus !== 'available' || isCreating}
             className="w-full p-3 bg-foreground text-background hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isCreating ? 'Creating Profile...' : 'Create Profile'}
