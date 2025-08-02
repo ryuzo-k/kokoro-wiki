@@ -103,40 +103,9 @@ export default function Dashboard({ params }: { params: { username: string } }) 
 
   useEffect(() => {
     checkUsernameOwnership()
-    loadCurrentEntries()
   }, [username])
 
-  const loadCurrentEntries = async () => {
-    try {
-      // Load latest thought
-      const { data: thoughtData } = await supabase
-        .from('thoughts')
-        .select('content')
-        .eq('username', username)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single()
-      
-      if (thoughtData) {
-        setCurrentThought(thoughtData.content)
-      }
-
-      // Load latest people entry
-      const { data: peopleData } = await supabase
-        .from('people_want_to_talk')
-        .select('content')
-        .eq('username', username)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single()
-      
-      if (peopleData) {
-        setCurrentPeople(peopleData.content)
-      }
-    } catch (error) {
-      console.error('Error loading current entries:', error)
-    }
-  }
+  // Removed auto-loading of previous content to start with empty fields
 
   const handleSaveThought = async () => {
     // JavaScript validation
