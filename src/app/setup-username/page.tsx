@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
 
@@ -14,6 +14,7 @@ export default function SetupUsername() {
   
   const { user, loading } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   // Redirect if not logged in
   useEffect(() => {
@@ -21,6 +22,14 @@ export default function SetupUsername() {
       router.push('/auth')
     }
   }, [user, loading, router])
+
+  // Pre-fill username from URL parameter
+  useEffect(() => {
+    const targetUsername = searchParams.get('username')
+    if (targetUsername) {
+      setUsername(targetUsername)
+    }
+  }, [searchParams])
 
   // Check if user already has a profile
   useEffect(() => {

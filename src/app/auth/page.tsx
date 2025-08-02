@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
+import { supabase } from '@/lib/supabase'
 
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false)
@@ -11,9 +12,46 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
+  const [targetUsername, setTargetUsername] = useState('')
   
   const { signUp, signIn } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Check username and set mode automatically
+  useEffect(() => {
+    const checkUsername = async () => {
+      const username = searchParams.get('username')
+      if (username) {
+        setTargetUsername(username)
+        
+        try {
+          // Check if username exists
+          const { data: existingProfile } = await supabase
+            .from('user_profiles')
+            .select('username')
+            .ilike('username', username)
+            .single()
+          
+          if (existingProfile) {
+            // Username exists - set to login mode
+            setIsSignUp(false)
+            setMessage(`Username "${username}" already exists. Please sign in.`)
+          } else {
+            // Username available - set to signup mode
+            setIsSignUp(true)
+            setMessage(`Username "${username}" is available! Create your account.`)
+          }
+        } catch (error) {
+          // Username available - set to signup mode
+          setIsSignUp(true)
+          setMessage(`Username "${username}" is available! Create your account.`)
+        }
+      }
+    }
+
+    checkUsername()
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,7 +72,9 @@ export default function AuthPage() {
         if (error) {
           setError(error.message)
         } else {
-          router.push('/setup-username')
+          // Redirect to setup-username with target username if available
+          const redirectUrl = targetUsername ? `/setup-username?username=${encodeURIComponent(targetUsername)}` : '/setup-username'
+          router.push(redirectUrl)
         }
       }
     } catch (err) {
