@@ -220,6 +220,39 @@ function HomeContent() {
             Your URL: <span className="font-medium">kokoro.wiki/{username}</span>
           </div>
         )}
+        
+        {/* Introduction Message */}
+        <div className="mt-12 pt-8 border-t border-foreground opacity-30">
+          <div className="prose prose-sm max-w-none text-foreground opacity-80 space-y-4">
+            <p className="text-base font-medium">Hey, I'm Ryuzo.</p>
+            <p>Let's build better human relationships by sharing our thoughts openly.<br/>
+            I'd like to introduce you to Kokoro Wiki.</p>
+            
+            <p><strong>Go claim your own page now.</strong><br/>
+            Express what you're truly thinking — honestly and openly.<br/>
+            Let's take a look together.</p>
+            
+            <p>First, go to kokoro.wiki.<br/>
+            Search for your username — short names are simple and beautiful.<br/>
+            Then, register and log in.</p>
+            
+            <p>Now you'll see your dashboard.<br/>
+            Write your first thought.<br/>
+            Tell us about your current situation.<br/>
+            And share who you want to connect with right now.</p>
+            
+            <p>Check out your own link — your words are reflected there.</p>
+            
+            <p>I'm always thinking about how to create better relationships.<br/>
+            This world is filled with miscommunication.<br/>
+            Let's build relationships that feel right to you.</p>
+            
+            <p><strong>Make your thoughts public.</strong><br/>
+            Put your link in your social media bio.<br/>
+            Instead of a portfolio that only shows your past,<br/>
+            share how you feel right now.</p>
+          </div>
+        </div>
       </main>
 
       <footer className="mt-16 text-center text-xs text-foreground opacity-50 space-y-2">
