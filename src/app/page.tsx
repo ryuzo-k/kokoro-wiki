@@ -224,33 +224,34 @@ function HomeContent() {
         {/* Introduction Message */}
         <div className="mt-12 pt-8 border-t border-foreground opacity-30">
           <div className="prose prose-sm max-w-none text-foreground opacity-80 space-y-4">
-            <p className="text-base font-medium">Hey, I'm Ryuzo.</p>
-            <p>Let's build better human relationships by sharing our thoughts openly.<br/>
+            <p>Hey, I'm Ryuzo.<br/>
+            Let's build better human relationships by sharing our thoughts openly.<br/>
             I'd like to introduce you to Kokoro Wiki.</p>
             
-            <p><strong>Go claim your own page now.</strong><br/>
-            Express what you're truly thinking — honestly and openly.<br/>
-            Let's take a look together.</p>
+            <p>Claim your personal page now, and start expressing your honest thoughts.<br/>
+            Kokoro means "heart" or "mind" in Japanese.<br/>
+            Let's all be a bit more open.</p>
             
-            <p>First, go to kokoro.wiki.<br/>
-            Search for your username — short names are simple and beautiful.<br/>
+            <p>Here's how it works:<br/>
+            Go to kokoro.wiki and search for your username.<br/>
+            Short names are simple and beautiful.<br/>
             Then, register and log in.</p>
             
-            <p>Now you'll see your dashboard.<br/>
-            Write your first thought.<br/>
+            <p>You'll see your personal dashboard.<br/>
+            Write down your first thought.<br/>
             Tell us about your current situation.<br/>
-            And share who you want to connect with right now.</p>
+            And share who you'd like to connect with right now.</p>
             
-            <p>Check out your own link — your words are reflected there.</p>
+            <p>Take a look at your personal link, your words are reflected there.</p>
             
-            <p>I'm always thinking about how to create better relationships.<br/>
-            This world is filled with miscommunication.<br/>
-            Let's build relationships that feel right to you.</p>
+            <p>I'm always thinking about how we can build better, more genuine relationships.<br/>
+            There's too much miscommunication in the world.<br/>
+            Let's create relationships that feel right for you.</p>
             
-            <p><strong>Make your thoughts public.</strong><br/>
-            Put your link in your social media bio.<br/>
-            Instead of a portfolio that only shows your past,<br/>
-            share how you feel right now.</p>
+            <p>Make your thoughts public.<br/>
+            Share your link in your social media bio.<br/>
+            Instead of just linking to a portfolio of your past,<br/>
+            share how you're feeling right now.</p>
           </div>
         </div>
       </main>
