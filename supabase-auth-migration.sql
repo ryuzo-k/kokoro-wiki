@@ -1,4 +1,4 @@
--- Add user_id columns to existing tables for authentication
+お-- Add user_id columns to existing tables for authentication
 ALTER TABLE thoughts ADD COLUMN user_id UUID REFERENCES auth.users(id);
 ALTER TABLE people_want_to_talk ADD COLUMN user_id UUID REFERENCES auth.users(id);
 

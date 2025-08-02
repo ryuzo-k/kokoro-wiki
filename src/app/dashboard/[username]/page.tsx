@@ -254,11 +254,7 @@ export default function Dashboard({ params }: { params: { username: string } }) 
         <p className="text-foreground opacity-70">
           Your URL: <span className="font-medium">kokoro.wiki/{username}</span>
         </p>
-        <div className="mt-4 p-3 border border-foreground opacity-60">
-          <p className="text-xs">
-            ⚠️ <strong>Privacy Notice:</strong> All content you share will be publicly viewable at your profile URL. Only share information you're comfortable making public.
-          </p>
-        </div>
+
         
         {/* Success Message */}
         {successMessage && (
