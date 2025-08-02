@@ -129,17 +129,18 @@ export default function Home() {
 
   return (
     <div className="min-h-screen p-8 max-w-md mx-auto flex flex-col justify-center">
-      <header className="text-center mb-16">
-        <h1 className="text-3xl mb-4">kokoro.wiki</h1>
-        <p className="text-foreground opacity-70">
-          Share your thoughts and who you want to connect with
+      <header className="text-center mb-12">
+        <h1 className="text-4xl mb-4">kokoro.wiki</h1>
+        <p className="text-lg text-foreground opacity-80 mb-8">
+          Share your thoughts and connect with people
         </p>
+        
         {user && (
-          <div className="mt-4 text-sm opacity-70">
-            Signed in as: {user.email}
-            <button
-              onClick={() => signOut()}
-              className="ml-4 text-link hover:underline"
+          <div className="mb-4 p-3 border border-foreground bg-background text-foreground opacity-80">
+            <p className="text-sm">Welcome back, {user.email}!</p>
+            <button 
+              onClick={signOut}
+              className="mt-2 text-sm underline hover:no-underline"
             >
               Sign Out
             </button>
@@ -151,7 +152,7 @@ export default function Home() {
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label htmlFor="username" className="block text-sm mb-2">
-              Username
+              Choose your username
             </label>
             <input
               type="text"
@@ -201,16 +202,18 @@ export default function Home() {
             disabled={!!username && (usernameStatus === 'taken' || usernameStatus === 'invalid' || usernameStatus === 'checking')}
             className="w-full p-3 bg-foreground text-background hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {user ? 'Go to Dashboard (Edit)' : 'Sign In to Edit'}
+            {user ? 'Create Profile' : 'Get Started'}
           </button>
         </form>
         
-        <button
-          onClick={handleViewProfile}
-          className="w-full p-3 border border-foreground hover:bg-foreground hover:text-background transition-colors"
-        >
-          View Profile
-        </button>
+        {username && (
+          <button
+            onClick={handleViewProfile}
+            className="w-full p-3 border border-foreground hover:bg-foreground hover:text-background transition-colors"
+          >
+            Preview Profile
+          </button>
+        )}
 
         {username && (
           <div className="text-center text-sm text-foreground opacity-70">

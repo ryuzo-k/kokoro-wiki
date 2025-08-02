@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { notFound, useRouter } from 'next/navigation'
 import { formatToLocalTime, formatDateForGrouping } from '@/lib/dateUtils'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface Props {
   params: { username: string }
@@ -27,7 +28,9 @@ export default function UserProfile({ params }: { params: { username: string } }
   const { username } = params
   const router = useRouter()
   const normalizedUsername = username.toLowerCase()
+  const { user } = useAuth()
   const [loading, setLoading] = useState(true)
+  const [isOwner, setIsOwner] = useState(false)
   const [currentThought, setCurrentThought] = useState<ThoughtEntry | null>(null)
   const [thoughtHistory, setThoughtHistory] = useState<ThoughtEntry[]>([])
   const [currentPeople, setCurrentPeople] = useState<PeopleEntry | null>(null)
@@ -40,6 +43,32 @@ export default function UserProfile({ params }: { params: { username: string } }
       return
     }
   }, [username, normalizedUsername, router])
+
+  // Check if current user owns this profile
+  useEffect(() => {
+    const checkOwnership = async () => {
+      if (user) {
+        try {
+          const { data: userProfile } = await supabase
+            .from('user_profiles')
+            .select('username')
+            .eq('user_email', user.email)
+            .single()
+          
+          if (userProfile && userProfile.username === normalizedUsername) {
+            setIsOwner(true)
+          }
+        } catch (error) {
+          // User doesn't own this profile
+          setIsOwner(false)
+        }
+      } else {
+        setIsOwner(false)
+      }
+    }
+
+    checkOwnership()
+  }, [user, normalizedUsername])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -95,16 +124,25 @@ export default function UserProfile({ params }: { params: { username: string } }
   return (
     <div className="min-h-screen p-8 max-w-2xl mx-auto">
       <header className="text-center mb-12">
-        <h1 className="text-3xl mb-2">@{username}</h1>
-        <p className="text-foreground opacity-70 mb-4">
-          kokoro.wiki/{username}
-        </p>
-        <a 
-          href={`/edit-username/${username}`}
-          className="inline-block px-4 py-2 text-sm border border-foreground hover:bg-foreground hover:text-background transition-colors"
-        >
-          Edit Username
-        </a>
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex-1"></div>
+          <div className="flex-1 text-center">
+            <h1 className="text-3xl mb-2">@{username}</h1>
+            <p className="text-foreground opacity-70">
+              kokoro.wiki/{username}
+            </p>
+          </div>
+          <div className="flex-1 flex justify-end">
+            {isOwner && (
+              <button
+                onClick={() => router.push(`/dashboard/${normalizedUsername}`)}
+                className="px-4 py-2 border border-foreground bg-background text-foreground hover:bg-foreground hover:text-background transition-colors text-sm"
+              >
+                Edit Profile
+              </button>
+            )}
+          </div>
+        </div>
       </header>
 
       <main className="space-y-16">

@@ -47,9 +47,9 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen p-8 max-w-md mx-auto flex flex-col justify-center">
       <header className="text-center mb-12">
-        <h1 className="text-3xl mb-4">kokoro-wiki</h1>
+        <h1 className="text-3xl mb-4">{isSignUp ? 'Create Account' : 'Welcome Back'}</h1>
         <p className="text-foreground opacity-70">
-          {isSignUp ? 'Create your account' : 'Sign in to your account'}
+          {isSignUp ? 'Join kokoro.wiki to share your thoughts' : 'Sign in to your kokoro.wiki account'}
         </p>
       </header>
 
