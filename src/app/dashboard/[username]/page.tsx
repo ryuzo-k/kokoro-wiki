@@ -25,11 +25,18 @@ export default function Dashboard({ params }: { params: { username: string } }) 
   
   // Success message states
   const [successMessage, setSuccessMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   
   // Show success message for 3 seconds
   const showSuccessMessage = (message: string) => {
     setSuccessMessage(message)
     setTimeout(() => setSuccessMessage(''), 3000)
+  }
+  
+  // Show error message for 5 seconds
+  const showErrorMessage = (message: string) => {
+    setErrorMessage(message)
+    setTimeout(() => setErrorMessage(''), 5000)
   }
   
   // Check if current user owns this username
@@ -141,18 +148,18 @@ export default function Dashboard({ params }: { params: { username: string } }) 
         .insert([{
           username: normalizedUsername,
           content: currentThought.trim(),
-          user_id: user.id,
-          user_email: user.email
+          user_id: user.id
         }])
 
       if (error) throw error
       
-      // Clear the input after successful save
+      // Clear the input and reload data
       setCurrentThought('')
+      await loadCurrentEntries()
       showSuccessMessage('Thoughts saved successfully!')
     } catch (error) {
       console.error('Error saving thought:', error)
-      alert('Failed to save')
+      showErrorMessage('Failed to save thought. Please try again.')
     } finally {
       setIsLoadingThought(false)
     }
@@ -168,18 +175,18 @@ export default function Dashboard({ params }: { params: { username: string } }) 
         .insert([{
           username: normalizedUsername,
           content: currentPeople.trim(),
-          user_id: user.id,
-          user_email: user.email
+          user_id: user.id
         }])
 
       if (error) throw error
       
-      // Clear the input after successful save
+      // Clear the input and reload data
       setCurrentPeople('')
+      await loadCurrentEntries()
       showSuccessMessage('People saved successfully!')
     } catch (error) {
       console.error('Error saving people:', error)
-      alert('Failed to save')
+      showErrorMessage('Failed to save people. Please try again.')
     } finally {
       setIsLoadingPeople(false)
     }
@@ -257,6 +264,19 @@ export default function Dashboard({ params }: { params: { username: string } }) 
         {successMessage && (
           <div className="mt-4 p-3 bg-foreground text-background">
             <p className="text-sm">✅ {successMessage}</p>
+          </div>
+        )}
+        
+        {/* Error Message */}
+        {errorMessage && (
+          <div className="mt-4 p-3 border border-foreground bg-background text-foreground opacity-80">
+            <p className="text-sm">❌ {errorMessage}</p>
+            <button 
+              onClick={() => setErrorMessage('')}
+              className="mt-2 text-xs underline hover:no-underline"
+            >
+              Dismiss
+            </button>
           </div>
         )}
       </header>
