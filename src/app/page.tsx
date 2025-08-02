@@ -3,10 +3,13 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
+import { supabase } from '@/lib/supabase'
 
 export default function Home() {
   const [username, setUsername] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [usernameStatus, setUsernameStatus] = useState<'checking' | 'available' | 'taken' | 'invalid' | null>(null)
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user, signOut, loading } = useAuth()
@@ -17,6 +20,59 @@ export default function Home() {
       setErrorMessage('This username is already taken by another user.')
     }
   }, [searchParams])
+
+  // Check username availability
+  const checkUsernameAvailability = async (usernameToCheck: string) => {
+    if (!usernameToCheck.trim()) {
+      setUsernameStatus(null)
+      return
+    }
+
+    // Basic validation
+    if (usernameToCheck.length < 3) {
+      setUsernameStatus('invalid')
+      return
+    }
+
+    if (!/^[a-zA-Z0-9_-]+$/.test(usernameToCheck)) {
+      setUsernameStatus('invalid')
+      return
+    }
+
+    setIsCheckingUsername(true)
+    setUsernameStatus('checking')
+
+    try {
+      // Check if username exists in user_profiles
+      const { data: existingProfile } = await supabase
+        .from('user_profiles')
+        .select('username')
+        .eq('username', usernameToCheck)
+        .single()
+
+      if (existingProfile) {
+        setUsernameStatus('taken')
+      } else {
+        setUsernameStatus('available')
+      }
+    } catch (error) {
+      // If no profile found, username is available
+      setUsernameStatus('available')
+    } finally {
+      setIsCheckingUsername(false)
+    }
+  }
+
+  // Debounced username check
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (username) {
+        checkUsernameAvailability(username)
+      }
+    }, 500) // 500ms delay
+
+    return () => clearTimeout(timeoutId)
+  }, [username])
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -78,6 +134,32 @@ export default function Home() {
               className="w-full p-3 border border-foreground bg-background text-foreground font-mono focus:outline-none focus:ring-2 focus:ring-link"
               required
             />
+            
+            {/* Username Status */}
+            {username && (
+              <div className="mt-2 text-sm">
+                {usernameStatus === 'checking' && (
+                  <p className="text-foreground opacity-70">
+                    🔍 Checking availability...
+                  </p>
+                )}
+                {usernameStatus === 'available' && (
+                  <p className="text-link">
+                    ✅ Username available!
+                  </p>
+                )}
+                {usernameStatus === 'taken' && (
+                  <p className="text-foreground opacity-80">
+                    ❌ Username already taken
+                  </p>
+                )}
+                {usernameStatus === 'invalid' && (
+                  <p className="text-foreground opacity-80">
+                    ❌ Username must be 3+ characters (letters, numbers, _, -)
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
           {errorMessage && (
@@ -88,7 +170,8 @@ export default function Home() {
 
           <button
             type="submit"
-            className="w-full p-3 bg-foreground text-background hover:opacity-90 transition-opacity"
+            disabled={!!username && (usernameStatus === 'taken' || usernameStatus === 'invalid' || usernameStatus === 'checking')}
+            className="w-full p-3 bg-foreground text-background hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {user ? 'Go to Dashboard (Edit)' : 'Sign In to Edit'}
           </button>
