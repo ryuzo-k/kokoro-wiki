@@ -18,8 +18,24 @@ export default function EditUsername({ params }: Props) {
   const handleUpdateUsername = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    // JavaScript validation
     if (!newUsername.trim()) {
-      setError('Username cannot be empty')
+      setError('Please enter a new username')
+      return
+    }
+
+    if (newUsername.trim().length < 3) {
+      setError('Username must be at least 3 characters long')
+      return
+    }
+
+    if (newUsername.trim().length > 20) {
+      setError('Username cannot be longer than 20 characters')
+      return
+    }
+
+    if (!/^[a-zA-Z0-9_-]+$/.test(newUsername.trim())) {
+      setError('Username can only contain letters, numbers, underscores, and hyphens')
       return
     }
 
@@ -96,10 +112,9 @@ export default function EditUsername({ params }: Props) {
               id="newUsername"
               value={newUsername}
               onChange={(e) => setNewUsername(e.target.value)}
-              placeholder="Enter new username"
+              placeholder="your-new-username"
               className="w-full p-3 border border-foreground bg-background text-foreground font-mono focus:outline-none focus:ring-2 focus:ring-link"
               disabled={isLoading}
-              required
             />
           </div>
 

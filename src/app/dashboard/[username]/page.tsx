@@ -139,7 +139,18 @@ export default function Dashboard({ params }: { params: { username: string } }) 
   }
 
   const handleSaveThought = async () => {
-    if (!currentThought.trim() || isLoadingThought || !user) return
+    // JavaScript validation
+    if (!user) {
+      showErrorMessage('User not authenticated')
+      return
+    }
+    
+    if (!currentThought.trim()) {
+      showErrorMessage('Please enter your thoughts')
+      return
+    }
+    
+    if (isLoadingThought) return
     
     setIsLoadingThought(true)
     try {
@@ -165,7 +176,18 @@ export default function Dashboard({ params }: { params: { username: string } }) 
   }
 
   const handleSavePeople = async () => {
-    if (!currentPeople.trim() || isLoadingPeople || !user) return
+    // JavaScript validation
+    if (!user) {
+      showErrorMessage('User not authenticated')
+      return
+    }
+    
+    if (!currentPeople.trim()) {
+      showErrorMessage('Please enter people you want to talk to')
+      return
+    }
+    
+    if (isLoadingPeople) return
     
     setIsLoadingPeople(true)
     try {

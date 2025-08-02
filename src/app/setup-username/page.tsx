@@ -110,7 +110,26 @@ function SetupUsernameContent() {
   const handleCreateProfile = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!user || usernameStatus !== 'available' || !displayName.trim()) return
+    // JavaScript validation
+    if (!user) {
+      setErrorMessage('User not authenticated')
+      return
+    }
+    
+    if (!displayName.trim()) {
+      setErrorMessage('Please enter your name')
+      return
+    }
+    
+    if (!username.trim()) {
+      setErrorMessage('Please enter a username')
+      return
+    }
+    
+    if (usernameStatus !== 'available') {
+      setErrorMessage('Please wait for username availability check')
+      return
+    }
 
     setIsCreating(true)
     setErrorMessage('')
@@ -176,7 +195,6 @@ function SetupUsernameContent() {
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Your full name"
               className="w-full p-3 border border-foreground bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-link"
-              required
               disabled={isCreating}
             />
           </div>
@@ -192,7 +210,6 @@ function SetupUsernameContent() {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="your-username"
               className="w-full p-3 border border-foreground bg-background text-foreground font-mono focus:outline-none focus:ring-2 focus:ring-link"
-              required
               disabled={isCreating}
             />
             

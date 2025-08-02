@@ -9,8 +9,8 @@ function AuthContent() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [mode, setMode] = useState<'signin' | 'signup'>('signup')
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
+  const [message, setMessage] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const [targetUsername, setTargetUsername] = useState('')
   
   const router = useRouter()
@@ -31,11 +31,20 @@ function AuthContent() {
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!email || !password) return
+    
+    // JavaScript validation
+    if (!email) {
+      setError('Please enter your email')
+      return
+    }
+    if (!password) {
+      setError('Please enter your password')
+      return
+    }
     
     setLoading(true)
-    setError('')
-    setMessage('')
+    setError(null)
+    setMessage(null)
     
     try {
       if (mode === 'signup') {
@@ -102,7 +111,6 @@ function AuthContent() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-3 border border-foreground bg-background text-foreground"
-              required
             />
           </div>
           
@@ -113,7 +121,6 @@ function AuthContent() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-3 border border-foreground bg-background text-foreground"
-              required
               minLength={6}
             />
           </div>
@@ -141,14 +148,14 @@ function AuthContent() {
         </div>
         
         {error && (
-          <div className="mt-4 p-3 border border-foreground text-red-600">
-            <p className="text-sm">{error}</p>
+          <div className="p-3 bg-red-900 text-red-100 rounded">
+            {error}
           </div>
         )}
         
         {message && (
-          <div className="mt-4 p-3 border border-foreground">
-            <p className="text-sm">{message}</p>
+          <div className="p-3 bg-green-900 text-green-100 rounded">
+            {message}
           </div>
         )}
       </div>
