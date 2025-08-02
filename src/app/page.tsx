@@ -1,13 +1,22 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 
 export default function Home() {
   const [username, setUsername] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { user, signOut, loading } = useAuth()
+
+  useEffect(() => {
+    const error = searchParams.get('error')
+    if (error === 'username-taken') {
+      setErrorMessage('This username is already taken by another user.')
+    }
+  }, [searchParams])
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -70,6 +79,12 @@ export default function Home() {
               required
             />
           </div>
+
+          {errorMessage && (
+            <div className="p-3 border border-foreground bg-background text-foreground opacity-80">
+              <p className="text-sm">❌ {errorMessage}</p>
+            </div>
+          )}
 
           <button
             type="submit"

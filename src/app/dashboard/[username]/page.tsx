@@ -31,8 +31,56 @@ export default function Dashboard({ params }: Props) {
     setTimeout(() => setSuccessMessage(''), 3000)
   }
   
-  // Load current entries on mount
+  // Check if current user owns this username
+  const checkUsernameOwnership = async () => {
+    if (!user) return
+    
+    try {
+      // Check if this username is already registered
+      const { data: existingProfile } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('username', username)
+        .single()
+      
+      if (existingProfile) {
+        // Username exists - check if it belongs to current user
+        if (existingProfile.user_email !== user.email) {
+          // Username belongs to someone else
+          router.push('/?error=username-taken')
+          return
+        }
+      } else {
+        // Username doesn't exist - check if user already has a profile
+        const { data: userProfile } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('user_email', user.email)
+          .single()
+        
+        if (userProfile) {
+          // User already has a different username
+          router.push(`/dashboard/${userProfile.username}?info=redirected`)
+          return
+        } else {
+          // Create new profile for this user
+          await supabase
+            .from('user_profiles')
+            .insert([{
+              user_id: user.id,
+              user_email: user.email,
+              username: username
+            }])
+        }
+      }
+    } catch (error) {
+      console.error('Error checking username ownership:', error)
+    }
+  }
+  
+  // Load current entries and check username ownership on mount
   useEffect(() => {
+    checkUsernameOwnership()
     loadCurrentEntries()
   }, [username])
 
@@ -78,7 +126,8 @@ export default function Dashboard({ params }: Props) {
         .insert([{
           username,
           content: currentThought.trim(),
-          user_id: user!.id
+          user_id: user!.id,
+          user_email: user!.email
         }])
 
       if (error) throw error
@@ -104,7 +153,8 @@ export default function Dashboard({ params }: Props) {
         .insert([{
           username,
           content: currentPeople.trim(),
-          user_id: user!.id
+          user_id: user!.id,
+          user_email: user!.email
         }])
 
       if (error) throw error
