@@ -153,9 +153,8 @@ export default function Dashboard({ params }: { params: { username: string } }) 
 
       if (error) throw error
       
-      // Clear the input and reload data
+      // Clear the input (don't reload to prevent showing old content)
       setCurrentThought('')
-      await loadCurrentEntries()
       showSuccessMessage('Thoughts saved successfully!')
     } catch (error) {
       console.error('Error saving thought:', error)
@@ -180,9 +179,8 @@ export default function Dashboard({ params }: { params: { username: string } }) 
 
       if (error) throw error
       
-      // Clear the input and reload data
+      // Clear the input (don't reload to prevent showing old content)
       setCurrentPeople('')
-      await loadCurrentEntries()
       showSuccessMessage('People saved successfully!')
     } catch (error) {
       console.error('Error saving people:', error)
