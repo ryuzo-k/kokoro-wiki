@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
 
-export default function Home() {
+function HomeContent() {
   const [username, setUsername] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [usernameStatus, setUsernameStatus] = useState<'checking' | 'available' | 'taken' | 'invalid' | null>(null)
@@ -239,5 +239,13 @@ export default function Home() {
         </p>
       </footer>
     </div>
+  )
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div className="min-h-screen p-8 flex items-center justify-center">Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   )
 }
