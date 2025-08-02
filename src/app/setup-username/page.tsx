@@ -71,7 +71,7 @@ export default function SetupUsername() {
       const { data: existingProfile } = await supabase
         .from('user_profiles')
         .select('username')
-        .eq('username', usernameToCheck)
+        .ilike('username', usernameToCheck)
         .single()
 
       if (existingProfile) {

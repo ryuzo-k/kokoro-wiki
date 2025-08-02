@@ -34,40 +34,53 @@ export default function UserProfile({ params }: Props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch thoughts
+        // Fetch thoughts (case insensitive)
         const { data: thoughts, error: thoughtsError } = await supabase
-    .from('thoughts')
-    .select('*')
-    .eq('username', username)
-    .order('created_at', { ascending: false })
+          .from('thoughts')
+          .select('*')
+          .ilike('username', username)
+          .order('created_at', { ascending: false })
 
-  // Fetch people entries
-  const { data: people, error: peopleError } = await supabase
-    .from('people_want_to_talk')
-    .select('*')
-    .eq('username', username)
-    .order('created_at', { ascending: false })
+        // Fetch people (case insensitive)
+        const { data: people, error: peopleError } = await supabase
+          .from('people_want_to_talk')
+          .select('*')
+          .ilike('username', username)
+          .order('created_at', { ascending: false })
 
-  if (thoughtsError && thoughtsError.code !== 'PGRST116') {
-    console.error('Error fetching thoughts:', thoughtsError)
-  }
+        if (thoughtsError && thoughtsError.code !== 'PGRST116') {
+          console.error('Error fetching thoughts:', thoughtsError)
+        }
 
-  if (peopleError && peopleError.code !== 'PGRST116') {
-    console.error('Error fetching people:', peopleError)
-  }
+        if (peopleError && peopleError.code !== 'PGRST116') {
+          console.error('Error fetching people:', peopleError)
+        }
 
-  // If no data exists for this user, show not found
-  if ((!thoughts || thoughts.length === 0) && (!people || people.length === 0)) {
-    notFound()
-  }
+        // If no data exists for this user, show not found
+        if ((!thoughts || thoughts.length === 0) && (!people || people.length === 0)) {
+          notFound()
+        }
 
-  // Get current (latest) entries
-  const currentThought = thoughts?.[0]
-  const currentPeople = people?.[0]
+        // Get current (latest) entries
+        const currentThought = thoughts?.[0]
+        const currentPeopleEntry = people?.[0]
 
-  // Get history (excluding current)
-  const thoughtHistory = thoughts?.slice(1) || []
-  const peopleHistory = people?.slice(1) || []
+        // Get history (excluding current)
+        const thoughtHistoryData = thoughts?.slice(1) || []
+        const peopleHistoryData = people?.slice(1) || []
+
+        // Update state
+        setCurrentThought(currentThought)
+        setCurrentPeople(currentPeopleEntry)
+        setThoughtHistory(thoughtHistoryData)
+        setPeopleHistory(peopleHistoryData)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    }
+
+    fetchData()
+  }, [username])
 
   return (
     <div className="min-h-screen p-8 max-w-2xl mx-auto">

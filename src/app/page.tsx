@@ -71,11 +71,11 @@ export default function Home() {
     setUsernameStatus('checking')
 
     try {
-      // Check if username exists in user_profiles
+      // Check if username exists in user_profiles (case insensitive)
       const { data: existingProfile } = await supabase
         .from('user_profiles')
         .select('username')
-        .eq('username', usernameToCheck)
+        .ilike('username', usernameToCheck)
         .single()
 
       if (existingProfile) {

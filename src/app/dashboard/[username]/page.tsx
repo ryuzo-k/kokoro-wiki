@@ -36,11 +36,11 @@ export default function Dashboard({ params }: Props) {
     if (!user) return
     
     try {
-      // Check if this username is already registered
+      // Check if this username is already registered (case insensitive)
       const { data: existingProfile } = await supabase
         .from('user_profiles')
         .select('*')
-        .eq('username', username)
+        .ilike('username', username)
         .single()
       
       if (existingProfile) {
