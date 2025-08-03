@@ -10,6 +10,7 @@ function HomeContent() {
   const [errorMessage, setErrorMessage] = useState('')
   const [usernameStatus, setUsernameStatus] = useState<'checking' | 'available' | 'taken' | 'invalid' | null>(null)
   const [isCheckingUsername, setIsCheckingUsername] = useState(false)
+  const [allowAutoRedirect, setAllowAutoRedirect] = useState(true)
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user, signOut, loading } = useAuth()
@@ -24,7 +25,7 @@ function HomeContent() {
   // Auto-redirect logged in users
   useEffect(() => {
     const checkUserProfile = async () => {
-      if (user && !loading) {
+      if (user && !loading && allowAutoRedirect) {
         try {
           const { data: userProfile } = await supabase
             .from('user_profiles')
@@ -47,7 +48,7 @@ function HomeContent() {
     }
 
     checkUserProfile()
-  }, [user, loading, router])
+  }, [user, loading, router, allowAutoRedirect])
 
   // Check username availability
   const checkUsernameAvailability = async (usernameToCheck: string) => {
@@ -140,11 +141,14 @@ function HomeContent() {
         {user && (
           <div className="mb-4 p-3 border border-foreground bg-background text-foreground opacity-80">
             <p className="text-sm">Welcome back, {user.email}!</p>
-            <button 
-              onClick={signOut}
-              className="mt-2 text-sm underline hover:no-underline"
+            <button
+              onClick={() => {
+                setAllowAutoRedirect(false)
+                signOut()
+              }}
+              className="text-foreground opacity-70 hover:opacity-100 text-sm"
             >
-              Sign Out
+              Logout
             </button>
           </div>
         )}
