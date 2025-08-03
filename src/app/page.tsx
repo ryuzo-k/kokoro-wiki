@@ -131,7 +131,7 @@ function HomeContent() {
       <header className="text-center mb-12">
         <h1 className="text-4xl mb-4">kokoro.wiki</h1>
         <p className="text-lg text-foreground opacity-80 mb-8">
-          Share your thoughts and connect with people
+          Share your thoughts and build relationships that feel right to you.
         </p>
         
         {user && (
@@ -220,40 +220,45 @@ function HomeContent() {
         {/* Introduction Message */}
         <div className="mt-12 pt-8 border-t border-foreground opacity-30">
           <div className="prose prose-sm max-w-none text-foreground opacity-80 space-y-4">
-            <p>Hey, I'm Ryuzo.<br/>
-            Let's build better human relationships by sharing our thoughts openly.<br/>
-            I'd like to introduce you to Kokoro Wiki.</p>
-            
-            <p>Claim your personal page now, and start expressing your honest thoughts.<br/>
-            Kokoro means "heart" or "mind" in Japanese.<br/>
-            Let's all be a bit more open.</p>
-            
-            <p>Here's how it works:<br/>
-            Go to kokoro.wiki and search for your username.<br/>
-            Short names are simple and beautiful.<br/>
+            <p>Hi, I’m Ryuzo.<br/>
+            I’m 17 years old. I dropped out of high school and came to San Francisco.<br/>
+            I’ve done some research on the human mind, and I started thinking -<br/>
+            maybe we can build better relationships by sharing our thoughts more openly.</p>
+
+            <p>So I built Kokoro Wiki.</p>
+
+            <p>You can create your own page and post your honest thoughts.<br/>
+            “Kokoro” means “heart” or “mind” in Japanese.<br/>
+            Let’s try to be a bit more open. Kokoro Wiki is here to help with that.</p>
+
+            <p>It’s really simple to use:<br/>
+            Go to kokoro.wiki and search for a username.<br/>
+            Short names are clean and beautiful.<br/>
             Then, register and log in.</p>
-            
-            <p>You'll see your personal dashboard.<br/>
-            Write down your first thought.<br/>
-            Tell us about your current situation.<br/>
-            And share who you'd like to connect with right now.</p>
-            
-            <p>Take a look at your personal link, your words are reflected there.</p>
-            
-            <p>I'm always thinking about how we can build better, more genuine relationships.<br/>
-            There's too much miscommunication in the world.<br/>
-            Let's create relationships that feel right for you.</p>
-            
-            <p>Make your thoughts public.<br/>
-            Share your link in your social media bio.<br/>
-            Instead of just linking to a portfolio of your past,<br/>
-            share how you're feeling right now.</p>
+
+            <p>You’ll see your personal dashboard.<br/>
+            Write your first thought.<br/>
+            Tell us how you’re doing.<br/>
+            And write about who you want to talk to right now.<br/>
+            Maybe you just want to be alone, or maybe you’re feeling a little lonely.</p>
+
+            <p>Then check your public page.<br/>
+            Your words are shown just as you wrote them.</p>
+
+            <p>I’m always thinking about how we can have more honest relationships.<br/>
+            There’s a lot of miscommunication in the world.<br/>
+            That’s why it’s important to create relationships that feel right to you.</p>
+
+            <p>So go ahead and share your thoughts.<br/>
+            Add the link to your social media bio.<br/>
+            Instead of just showing your past,<br/>
+            show what you’re thinking and feeling right now.</p>
           </div>
         </div>
       </main>
 
       <footer className="mt-16 text-center text-xs text-foreground opacity-50 space-y-2">
-        <p>Share your thoughts and find people to connect with</p>
+        <p>Share your thoughts and build relationships that feel right to you.</p>
         {!user && (
           <p>
             <a href="/auth" className="text-link hover:underline">

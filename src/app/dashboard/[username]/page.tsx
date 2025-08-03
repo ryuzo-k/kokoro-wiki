@@ -275,7 +275,7 @@ export default function Dashboard({ params }: { params: { username: string } }) 
             <textarea
               value={currentThought}
               onChange={(e) => setCurrentThought(e.target.value)}
-              placeholder="Share your current thoughts, ideas, or reflections..."
+              placeholder="Tell us about your current situation."
               className="w-full h-32 p-4 border border-foreground bg-background text-foreground font-mono resize-none focus:outline-none focus:ring-2 focus:ring-link"
               disabled={isLoadingThought}
             />
@@ -303,7 +303,7 @@ export default function Dashboard({ params }: { params: { username: string } }) 
             <textarea
               value={currentPeople}
               onChange={(e) => setCurrentPeople(e.target.value)}
-              placeholder="Describe the types of people you'd like to connect with or topics you're interested in discussing..."
+              placeholder="Maybe you want some solitude, or maybe you're feeling a bit lonely."
               className="w-full h-32 p-4 border border-foreground bg-background text-foreground font-mono resize-none focus:outline-none focus:ring-2 focus:ring-link"
               disabled={isLoadingPeople}
             />
