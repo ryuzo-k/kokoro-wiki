@@ -139,18 +139,20 @@ function AuthContent() {
           </button>
         </form>
         
-        <div className="mt-6 text-center">
-          <button
-            onClick={() => {
-              setMode(mode === 'signup' ? 'signin' : 'signup')
-              setError('')
-              setMessage('')
-            }}
-            className="text-sm underline hover:no-underline"
-          >
-            {mode === 'signup' ? 'Already have an account? Sign in' : 'Need an account? Sign up'}
-          </button>
-        </div>
+        {!searchParams.get('mode') && (
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => {
+                setMode(mode === 'signup' ? 'signin' : 'signup')
+                setError(null)
+                setMessage(null)
+              }}
+              className="text-sm underline hover:no-underline"
+            >
+              {mode === 'signup' ? 'Already have an account? Sign in' : 'Need an account? Sign up'}
+            </button>
+          </div>
+        )}
         
         {error && (
           <div className="p-3 bg-red-900 text-red-100 rounded">
