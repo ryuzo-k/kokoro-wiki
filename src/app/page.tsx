@@ -151,36 +151,7 @@ function HomeContent() {
       </header>
 
       <main className="space-y-8">
-        {user ? (
-          <div className="space-y-6">
-            <div className="text-center space-y-4">
-              <p className="text-lg">Welcome back!</p>
-              <button
-                onClick={async () => {
-                  try {
-                    const { data: userProfile } = await supabase
-                      .from('user_profiles')
-                      .select('username')
-                      .eq('user_email', user.email)
-                      .single()
-                    
-                    if (userProfile) {
-                      router.push(`/dashboard/${userProfile.username}`)
-                    } else {
-                      router.push('/setup-username')
-                    }
-                  } catch (error) {
-                    router.push('/setup-username')
-                  }
-                }}
-                className="w-full p-3 bg-foreground text-background hover:opacity-90 transition-opacity"
-              >
-                Go to Profile Dashboard
-              </button>
-            </div>
-          </div>
-        ) : (
-          <form onSubmit={handleLogin} className="space-y-6">
+        <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label htmlFor="username" className="block text-sm mb-2">
               Choose your username
@@ -237,14 +208,13 @@ function HomeContent() {
              usernameStatus === 'taken' ? 'Sign In' : 
              usernameStatus === 'available' ? 'Sign Up' : 
              'Get Started'}
-            </button>
-          </form>
-          
-          {username && (
-            <div className="text-center text-sm text-foreground opacity-70">
-              Your URL: <span className="font-medium">kokoro.wiki/{username}</span>
-            </div>
-          )}
+          </button>
+        </form>
+        
+        {username && (
+          <div className="text-center text-sm text-foreground opacity-70">
+            Your URL: <span className="font-medium">kokoro.wiki/{username}</span>
+          </div>
         )}
         
         {/* Introduction Message */}

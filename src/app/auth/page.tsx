@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/contexts/AuthContext'
 
 function AuthContent() {
   const [email, setEmail] = useState('')
@@ -15,7 +16,15 @@ function AuthContent() {
   
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { user, loading: authLoading } = useAuth()
   
+  // Redirect logged in users
+  useEffect(() => {
+    if (user && !authLoading) {
+      router.push('/')
+    }
+  }, [user, authLoading, router])
+
   useEffect(() => {
     const username = searchParams.get('username')
     const authMode = searchParams.get('mode')
