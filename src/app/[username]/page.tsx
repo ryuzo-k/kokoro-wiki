@@ -157,9 +157,9 @@ export default function UserProfile({ params }: { params: { username: string } }
                   Edit Profile
                 </button>
                 <button
-                  onClick={() => {
-                    signOut()
-                    router.push('/')
+                  onClick={async () => {
+                    await signOut()
+                    window.location.href = '/'
                   }}
                   className="px-4 py-2 border border-foreground bg-background text-foreground hover:bg-foreground hover:text-background transition-colors text-sm"
                 >

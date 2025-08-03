@@ -230,9 +230,9 @@ export default function Dashboard({ params }: { params: { username: string } }) 
               View Profile
             </button>
             <button
-              onClick={() => {
-                signOut()
-                router.push('/')
+              onClick={async () => {
+                await signOut()
+                window.location.href = '/'
               }}
               className="text-foreground opacity-70 hover:opacity-100"
             >
