@@ -46,7 +46,30 @@ function AuthContent() {
     setError(null)
     setMessage(null)
     
+    // Get current user to check if already logged in
+    const { data: { user: currentUser } } = await supabase.auth.getUser()
+    
     try {
+      // If user is already logged in, redirect them appropriately
+      if (currentUser) {
+        try {
+          const { data: profile } = await supabase
+            .from('user_profiles')
+            .select('username')
+            .eq('user_id', currentUser.id)
+            .single()
+          
+          if (profile) {
+            router.push(`/dashboard/${profile.username}`)
+          } else {
+            router.push(`/setup-username?username=${targetUsername}`)
+          }
+        } catch (error) {
+          router.push(`/setup-username?username=${targetUsername}`)
+        }
+        return
+      }
+      
       if (mode === 'signup') {
         // First check if email already exists in user_profiles
         const { data: existingUser } = await supabase
