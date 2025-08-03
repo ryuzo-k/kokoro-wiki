@@ -48,6 +48,18 @@ function AuthContent() {
     
     try {
       if (mode === 'signup') {
+        // First check if email already exists in user_profiles
+        const { data: existingUser } = await supabase
+          .from('user_profiles')
+          .select('user_email')
+          .eq('user_email', email)
+          .single()
+        
+        if (existingUser) {
+          setError('This email is already registered. Please sign in instead.')
+          return
+        }
+        
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -59,9 +71,18 @@ function AuthContent() {
         })
         
         if (error) {
-          setError(error.message)
+          if (error.message.includes('already registered') || error.message.includes('already been registered')) {
+            setError('This email is already registered. Please sign in instead.')
+          } else {
+            setError(error.message)
+          }
         } else {
-          setMessage('Check your email for the confirmation link!')
+          // Check if user was actually created or already exists
+          if (data.user && !data.user.email_confirmed_at) {
+            setMessage('Check your email for the confirmation link!')
+          } else {
+            setError('This email is already registered. Please sign in instead.')
+          }
         }
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
