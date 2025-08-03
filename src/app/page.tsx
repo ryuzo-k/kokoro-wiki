@@ -180,7 +180,7 @@ function HomeContent() {
             </div>
           </div>
         ) : (
-        <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label htmlFor="username" className="block text-sm mb-2">
               Choose your username
@@ -237,14 +237,14 @@ function HomeContent() {
              usernameStatus === 'taken' ? 'Sign In' : 
              usernameStatus === 'available' ? 'Sign Up' : 
              'Get Started'}
-          </button>
-        </form>
-        
-        {username && (
-          <div className="text-center text-sm text-foreground opacity-70">
-            Your URL: <span className="font-medium">kokoro.wiki/{username}</span>
-          </div>
-        )}
+            </button>
+          </form>
+          
+          {username && (
+            <div className="text-center text-sm text-foreground opacity-70">
+              Your URL: <span className="font-medium">kokoro.wiki/{username}</span>
+            </div>
+          )}
         )}
         
         {/* Introduction Message */}
