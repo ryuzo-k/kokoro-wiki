@@ -268,7 +268,7 @@ function HomeContent() {
         )}
         <p>
           View our{' '}
-          <a href="https://kokororesearch.org/privacy" target="_blank" rel="noopener noreferrer" className="text-link hover:underline">
+          <a href="https://kokororesearch.org/policies/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-link hover:underline">
             Privacy Policy
           </a>
         </p>
