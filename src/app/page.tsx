@@ -240,11 +240,12 @@ function HomeContent() {
           </button>
         </form>
         
-          {username && (
-            <div className="text-center text-sm text-foreground opacity-70">
-              Your URL: <span className="font-medium">kokoro.wiki/{username}</span>
-            </div>
-          )}
+        {username && (
+          <div className="text-center text-sm text-foreground opacity-70">
+            Your URL: <span className="font-medium">kokoro.wiki/{username}</span>
+          </div>
+        )}
+        )}
         
         {/* Introduction Message */}
         <div className="mt-12 pt-8 border-t border-foreground opacity-30">
