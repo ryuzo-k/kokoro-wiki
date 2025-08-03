@@ -116,11 +116,7 @@ function HomeContent() {
     }
   }
 
-  const handleViewProfile = () => {
-    if (username.trim()) {
-      router.push(`/${username.trim()}`)
-    }
-  }
+
 
   if (loading) {
     return (
@@ -215,15 +211,6 @@ function HomeContent() {
           </button>
         </form>
         
-        {username && (
-          <button
-            onClick={handleViewProfile}
-            className="w-full p-3 border border-foreground hover:bg-foreground hover:text-background transition-colors"
-          >
-            Preview Profile
-          </button>
-        )}
-
         {username && (
           <div className="text-center text-sm text-foreground opacity-70">
             Your URL: <span className="font-medium">kokoro.wiki/{username}</span>
