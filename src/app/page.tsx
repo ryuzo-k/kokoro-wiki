@@ -105,7 +105,9 @@ function HomeContent() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     if (!user) {
-      router.push('/auth')
+      // If username exists, go to signin mode; otherwise signup mode
+      const mode = usernameStatus === 'taken' ? 'signin' : 'signup'
+      router.push(`/auth?username=${encodeURIComponent(username)}&mode=${mode}`)
       return
     }
     if (username.trim()) {
@@ -199,10 +201,13 @@ function HomeContent() {
 
           <button
             type="submit"
-            disabled={!!username && (usernameStatus === 'taken' || usernameStatus === 'invalid' || usernameStatus === 'checking')}
+            disabled={!!username && (usernameStatus === 'invalid' || usernameStatus === 'checking')}
             className="w-full p-3 bg-foreground text-background hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {user ? 'Create Profile' : 'Get Started'}
+            {user ? 'Create Profile' : 
+             usernameStatus === 'taken' ? 'Sign In' : 
+             usernameStatus === 'available' ? 'Sign Up' : 
+             'Get Started'}
           </button>
         </form>
         
