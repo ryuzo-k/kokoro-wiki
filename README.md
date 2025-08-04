@@ -1,21 +1,71 @@
-# kokoro-wiki
+# Kokoro Wiki
 
-A Linktree-style personal profile site where you share your thoughts and who you want to connect with, building a history over time.
+*Share your thoughts and build relationships that feel right to you.*
 
-**Created by**: Ryuzo Kijima  
-**Organization**: [Kokoro Research](https://kokororesearch.org)  
+---
+
+Hi, I'm Ryuzo.
+I'm 17 years old and came from Japan to San Francisco.
+I've been doing a bit of research on the human mind.
+Through that, I started to think—maybe we can build better relationships by openly sharing our thoughts.
+There's a lot of miscommunication in the world.
+So, I created a service called Kokoro Wiki.
+
+Create your own personal page now, and try sharing your honest thoughts.
+"Kokoro" means heart or mind in Japanese.
+Let's all become just a little more open.
+Kokoro.wiki is here to help with that.
+
+## How It Works
+
+It's very easy to use:
+First, go to [kokoro.wiki](https://kokoro.wiki) and search for your username.
+Short names are simple, beautiful, and recommended.
+Then, register and log in.
+
+You'll see your own personal dashboard.
+Write your first "thought" there.
+Try sharing how you're doing right now.
+Also, write about what kind of people you want to talk to.
+Maybe you want to be alone.
+Or maybe, you're feeling a bit lonely.
+
+Then take a look at the link to your own page.
+It reflects your words just as they are.
+
+I always think about how we can build relationships where people can speak more honestly.
+There is a lot of miscommunication—misunderstandings and disconnects—in this world.
+That's exactly why we should build relationships that feel comfortable for us.
+
+Let's publish our thoughts.
+Put this link in your SNS bio.
+Instead of a portfolio that only shows your past achievements,
+let's share your current thoughts and feelings.
+
+---
+
+I dropped out of high school to understand the human mind and to make humanity a little better. In the age of AI, this kind of effort is more necessary than ever.
+
+For now, I only want to talk with people I feel close to. This is my time to build.
+
 **Contact**: ryuzo@kokororesearch.org
 
-## Features
+## Technical Features
 
-- **IBM Plex Mono** typography with monochrome palette (#111 text, #FAFAFA bg, #00BFFF links)
-- **No animations** - generous vertical whitespace (line-height 1.8)
-- **Linktree-style profile pages:**
-  - `/` - Login page (username input)
-  - `/dashboard/[username]` - Edit page (update thoughts & people you want to talk to)
-  - `/[username]` - Public profile (current content + past history)
-- **History functionality** - Each update saves previous content as history
-- **ISR** - Profile pages revalidate every 60 seconds
+- **Next.js 14** with App Router and TypeScript
+- **Supabase** for authentication, database, and Row Level Security (RLS)
+- **Tailwind CSS** for styling with custom monochrome design
+- **IBM Plex Mono** typography with generous whitespace (line-height 1.8)
+- **Minimalist UI** - No animations, clean design focused on content
+- **Real-time authentication** with email confirmation
+- **Profile pages:**
+  - `/` - Home page with username search and signup
+  - `/auth` - Authentication page for login/signup
+  - `/dashboard/[username]` - Personal dashboard for editing thoughts
+  - `/[username]` - Public profile displaying current thoughts and history
+- **History functionality** - Each update saves previous content as timestamped history
+- **Row Level Security** - Users can only edit their own content
+- **Responsive design** - Works on desktop and mobile
 
 ## Setup
 
