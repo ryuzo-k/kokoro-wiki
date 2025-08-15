@@ -166,19 +166,9 @@ function SetupUsernameContent() {
 
       // Redirect to dashboard
       router.push(`/dashboard/${normalizedUsername}`)
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error creating profile:', error)
-      
-      // Provide more specific error messages
-      if (error.code === '23505') {
-        setErrorMessage('Username already taken. Please choose a different one.')
-      } else if (error.message?.includes('user_id')) {
-        setErrorMessage('Authentication error. Please try logging out and back in.')
-      } else if (error.message?.includes('user_email')) {
-        setErrorMessage('Email verification required. Please check your email.')
-      } else {
-        setErrorMessage(`Failed to create profile: ${error.message || 'Unknown error'}`)
-      }
+      setErrorMessage('Failed to create profile. Please try again.')
     } finally {
       setIsCreating(false)
     }

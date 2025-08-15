@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     siteName: "Kokoro Wiki",
     images: [
       {
-        url: "/ogp-image.png",
+        url: "/kokoro-research-logo.png",
         width: 1200,
         height: 630,
       },
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Kokoro Wiki",
     description: "Share your thoughts and connect with like-minded people",
-    images: ["/ogp-image.png"],
+    images: ["/kokoro-research-logo.png"],
   },
 };
 

@@ -7,7 +7,7 @@ CREATE INDEX IF NOT EXISTS idx_thoughts_user_id ON thoughts(user_id);
 CREATE INDEX IF NOT EXISTS idx_people_want_to_talk_user_id ON people_want_to_talk(user_id);
 
 -- Ensure user_profiles table has unique username and enable RLS
-ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_profilkoes ENABLE ROW LEVEL SECURITY;
 CREATE UNIQUE INDEX IF NOT EXISTS user_profiles_username_key ON user_profiles(username);
 
 -- Allow users to select their own profile and everyone to view public profile data
