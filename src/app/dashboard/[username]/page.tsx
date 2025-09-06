@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
+import SupportButton from '@/components/SupportButton'
 
 interface Props {
   params: { username: string }
@@ -222,7 +223,8 @@ export default function Dashboard({ params }: { params: { username: string } }) 
       <header className="mb-12">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl">@{username} Dashboard</h1>
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
+            <SupportButton variant="link" size="sm" />
             <button
               onClick={() => router.push(`/${username}`)}
               className="text-link hover:underline"

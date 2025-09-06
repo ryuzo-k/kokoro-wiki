@@ -5,6 +5,7 @@ import { notFound, useRouter } from 'next/navigation'
 import { formatToLocalTime, formatDateForGrouping } from '@/lib/dateUtils'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
+import SupportButton from '@/components/SupportButton'
 
 interface Props {
   params: { username: string }
@@ -250,7 +251,10 @@ export default function UserProfile({ params }: { params: { username: string } }
         )}
       </main>
 
-      <footer className="mt-16 text-center">
+      <footer className="mt-16 text-center space-y-4">
+        <div className="flex justify-center">
+          <SupportButton variant="secondary" size="sm" />
+        </div>
         <a 
           href="/" 
           className="text-link hover:underline"

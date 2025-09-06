@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
+import SupportButton from '@/components/SupportButton'
 
 function HomeContent() {
   const [username, setUsername] = useState('')
@@ -257,21 +258,32 @@ function HomeContent() {
         </div>
       </main>
 
-      <footer className="mt-16 text-center text-xs text-foreground opacity-50 space-y-2">
-        <p>Share your thoughts and build relationships that feel right to you.</p>
-        {!user && (
+      <footer className="mt-16 text-center text-xs text-foreground opacity-50 space-y-4">
+        <div className="space-y-3">
+          <div className="text-sm opacity-80">
+            <p><strong>This project is completely free and non-profit.</strong></p>
+            <p>If Kokoro Wiki helps you connect with others, consider supporting Ryuzo's work.</p>
+          </div>
+          <div className="flex justify-center">
+            <SupportButton variant="secondary" size="sm" />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <p>Share your thoughts and build relationships that feel right to you.</p>
+          {!user && (
+            <p>
+              <a href="/auth" className="text-link hover:underline">
+                Sign In / Sign Up
+              </a>
+            </p>
+          )}
           <p>
-            <a href="/auth" className="text-link hover:underline">
-              Sign In / Sign Up
+            View our{' '}
+            <a href="https://kokororesearch.org/policies/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-link hover:underline">
+              Privacy Policy
             </a>
           </p>
-        )}
-        <p>
-          View our{' '}
-          <a href="https://kokororesearch.org/policies/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-link hover:underline">
-            Privacy Policy
-          </a>
-        </p>
+        </div>
       </footer>
     </div>
   )
