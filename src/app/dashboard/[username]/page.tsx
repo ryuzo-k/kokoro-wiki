@@ -221,31 +221,36 @@ export default function Dashboard({ params }: { params: { username: string } }) 
   return (
     <div className="min-h-screen p-8 max-w-2xl mx-auto">
       <header className="mb-12">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h1 className="text-2xl mb-2">@{username} Dashboard</h1>
-            <div className="text-xs text-foreground opacity-70 max-w-md">
-              <p className="mb-1">💝 <strong>Support this project:</strong> Kokoro Wiki is free and non-profit.</p>
-              <p>Help Ryuzo continue building tools for human connection.</p>
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl">@{username} Dashboard</h1>
+            <div className="flex gap-4 items-center">
+              <button
+                onClick={() => router.push(`/${username}`)}
+                className="text-link hover:underline"
+              >
+                View Profile
+              </button>
+              <button
+                onClick={async () => {
+                  await signOut()
+                  window.location.href = '/'
+                }}
+                className="text-foreground opacity-70 hover:opacity-100"
+              >
+                Logout
+              </button>
             </div>
           </div>
-          <div className="flex gap-4 items-center">
-            <SupportButton variant="secondary" size="sm" />
-            <button
-              onClick={() => router.push(`/${username}`)}
-              className="text-link hover:underline"
-            >
-              View Profile
-            </button>
-            <button
-              onClick={async () => {
-                await signOut()
-                window.location.href = '/'
-              }}
-              className="text-foreground opacity-70 hover:opacity-100"
-            >
-              Logout
-            </button>
+          
+          <div className="mb-4 p-3 border border-foreground opacity-80 bg-background">
+            <div className="text-xs text-foreground space-y-1">
+              <p>💝 <strong>Support this project:</strong> Kokoro Wiki is free and non-profit.</p>
+              <p>Help Ryuzo continue building tools for human connection.</p>
+            </div>
+            <div className="mt-3 flex justify-center">
+              <SupportButton variant="secondary" size="sm" />
+            </div>
           </div>
         </div>
         <p className="text-foreground opacity-70">
