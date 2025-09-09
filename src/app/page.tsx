@@ -258,7 +258,7 @@ function HomeContent() {
         </div>
       </main>
 
-      <footer className="mt-16 text-center text-xs text-foreground opacity-50 space-y-4">
+      <footer className="mt-16 text-center text-xs text-foreground opacity-50 space-y-8">
         <div className="space-y-3">
           <div className="text-sm opacity-80">
             <p><strong>This project is completely free and non-profit.</strong></p>
