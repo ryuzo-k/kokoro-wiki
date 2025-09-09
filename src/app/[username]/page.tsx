@@ -252,8 +252,15 @@ export default function UserProfile({ params }: { params: { username: string } }
       </main>
 
       <footer className="mt-16 text-center space-y-4">
-        <div className="flex justify-center">
-          <SupportButton variant="secondary" size="sm" />
+        <div className="space-y-3">
+          <div className="text-xs text-foreground opacity-70">
+            <p><strong>💝 Support Kokoro Wiki</strong></p>
+            <p>This platform is completely free and non-profit.</p>
+            <p>Help Ryuzo continue building tools for honest human connection.</p>
+          </div>
+          <div className="flex justify-center">
+            <SupportButton variant="secondary" size="sm" />
+          </div>
         </div>
         <a 
           href="/" 
