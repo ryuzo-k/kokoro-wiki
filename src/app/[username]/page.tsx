@@ -256,7 +256,7 @@ export default function UserProfile({ params }: { params: { username: string } }
           <div className="text-xs text-foreground opacity-70">
             <p><strong>💝 Support Kokoro Wiki</strong></p>
             <p>This platform is completely free and non-profit.</p>
-            <p>Help Ryuzo continue building tools for honest human connection.</p>
+            <p>Help <a href="https://x.com/ryuzokijima" target="_blank" rel="noopener noreferrer" className="text-link hover:underline">Ryuzo</a> continue building tools for honest human connection.</p>
           </div>
           <div className="flex justify-center">
             <SupportButton variant="secondary" size="sm" />

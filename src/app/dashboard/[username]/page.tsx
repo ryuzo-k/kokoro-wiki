@@ -246,7 +246,7 @@ export default function Dashboard({ params }: { params: { username: string } }) 
           <div className="mb-4 p-3 border border-foreground opacity-80 bg-background">
             <div className="text-xs text-foreground space-y-1">
               <p>💝 <strong>Support this project:</strong> Kokoro Wiki is free and non-profit.</p>
-              <p>Help Ryuzo continue building tools for human connection.</p>
+              <p>Help <a href="https://x.com/ryuzokijima" target="_blank" rel="noopener noreferrer" className="text-link hover:underline">Ryuzo</a> continue building tools for human connection.</p>
             </div>
             <div className="mt-3 flex justify-center">
               <SupportButton variant="secondary" size="sm" />
